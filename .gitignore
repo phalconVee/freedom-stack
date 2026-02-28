@@ -40,7 +40,17 @@ dist-ssr
 /cypress/videos/
 /cypress/screenshots/
 
-# 👉 Custom Git ignores
+vuexy-vue-laravel-template/
+
+# All markdown except README
+*.md
+!README.md
+
+# FreedomStack HTML prototypes
+freedomstack-auth-screens-v2.html
+freedomstack-calculator-flow.html
+freedomstack-dashboard-v2.html
+freedomstack-landing-page.html
 
 # Editor directories and files
 .vscode/*
