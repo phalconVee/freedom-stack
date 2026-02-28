@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreedomStack — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0a0a0a;
+  --black-card: #111111;
+  --black-hover: #161616;
+  --white: #fafaf9;
+  --green: #22c55e;
+  --green-dim: #166534;
+  --green-glow: rgba(34, 197, 94, 0.12);
+  --green-glow-strong: rgba(34, 197, 94, 0.2);
+  --red: #ef4444;
+  --red-glow: rgba(239, 68, 68, 0.12);
+  --amber: #f59e0b;
+  --amber-glow: rgba(245, 158, 11, 0.12);
+  --blue: #3b82f6;
+  --blue-glow: rgba(59, 130, 246, 0.12);
+  --gray-300: #d4d4d8;
+  --gray-400: #a1a1aa;
+  --gray-500: #71717a;
+  --gray-600: #52525b;
+  --gray-700: #3f3f46;
+  --gray-800: #27272a;
+  --gray-900: #18181b;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --sidebar-width: 260px;
+  --topbar-height: 60px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--green);
+  color: var(--black);
+}
+
+/* ========== LAYOUT ========== */
+.app-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  min-height: 100vh;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+  grid-row: 1 / -1;
+  background: var(--black-card);
+  border-right: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  z-index: 50;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.25rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: var(--white);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--green);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--black);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+}
+
+.nav-section-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--gray-600);
+  padding: 1.25rem 1.5rem 0.5rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.5rem;
+  font-size: 0.88rem;
+  color: var(--gray-400);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--sans);
+}
+
+.nav-item:hover {
+  color: var(--white);
+  background: rgba(255,255,255,0.03);
+}
+
+.nav-item.active {
+  color: var(--white);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 25%;
+  bottom: 25%;
+  width: 3px;
+  background: var(--green);
+  border-radius: 0 3px 3px 0;
+}
+
+.nav-item svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.nav-item .nav-label { flex: 1; }
+
+.nav-badge {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+.nav-badge.green { background: var(--green-glow); color: var(--green); }
+.nav-badge.amber { background: var(--amber-glow); color: var(--amber); }
+.nav-badge.coming { background: rgba(255,255,255,0.05); color: var(--gray-600); font-size: 0.55rem; }
+
+.nav-submenu { display: none; padding-left: 2.85rem; }
+.nav-submenu.open { display: block; }
+.nav-submenu .nav-item { padding: 0.4rem 1rem; font-size: 0.82rem; }
+.nav-submenu .nav-item.active::before { display: none; }
+
+.nav-chevron { transition: transform 0.2s; }
+.nav-chevron.open { transform: rotate(90deg); }
+
+.sidebar-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--green-dim), var(--green));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-email { font-size: 0.7rem; color: var(--gray-500); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ========== TOPBAR ========== */
+.topbar {
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: var(--topbar-height);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  margin-left: var(--sidebar-width);
+}
+
+.topbar-title { font-size: 0.95rem; font-weight: 600; }
+
+.topbar-right { display: flex; align-items: center; gap: 1rem; }
+
+.topbar-btn {
+  background: none;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.topbar-btn:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+
+.topbar-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.notif-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  background: var(--green);
+  border-radius: 50%;
+  border: 2px solid var(--black);
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 0.4rem;
+}
+
+.hamburger svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 1.75; fill: none; }
+
+/* ========== MAIN ========== */
+.main {
+  margin-left: var(--sidebar-width);
+  padding: 2rem;
+  min-height: calc(100vh - var(--topbar-height));
+}
+
+.page { display: none; animation: pageIn 0.35s ease both; }
+.page.active { display: block; }
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== PROFILE COMPLETENESS ========== */
+.profile-completion {
+  background: var(--black-card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.pc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.pc-header h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.pc-pct {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--green);
+}
+
+.pc-bar-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 100px;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+
+.pc-bar-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 100px;
+  transition: width 0.6s ease;
+}
+
+.pc-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.pc-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.pc-step:hover {
+  border-color: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+}
+
+.pc-step.done {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.pc-step.done:hover {
+  border-color: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.02);
+}
+
+.pc-step-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.pc-step-icon.pending {
+  background: rgba(255,255,255,0.06);
+  color: var(--gray-400);
+  border: 1.5px solid rgba(255,255,255,0.1);
+}
+
+.pc-step-icon.complete {
+  background: var(--green-glow);
+  color: var(--green);
+}
+
+.pc-step-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.pc-step-title {
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.pc-step-sub {
+  font-size: 0.7rem;
+  color: var(--gray-500);
+}
+
+.pc-step-time {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--gray-600);
+  flex-shrink: 0;
+}
+
+/* ========== WELCOME ========== */
+.dash-welcome {
+  margin-bottom: 1.75rem;
+}
+
+.dash-welcome h1 {
+  font-family: var(--serif);
+  font-size: 1.75rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.dash-welcome p {
+  color: var(--gray-400);
+  font-size: 0.9rem;
+}
+
+/* ========== STAT CARDS ========== */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: var(--black-card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 1.35rem;
+  transition: border-color 0.2s;
+}
+
+.stat-card:hover { border-color: rgba(255,255,255,0.1); }
+
+.stat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--gray-500);
+}
+
+.stat-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.75;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stat-icon.green { background: var(--green-glow); }
+.stat-icon.green svg { stroke: var(--green); }
+.stat-icon.amber { background: var(--amber-glow); }
+.stat-icon.amber svg { stroke: var(--amber); }
+.stat-icon.blue { background: var(--blue-glow); }
+.stat-icon.blue svg { stroke: var(--blue); }
+
+.stat-value {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.15rem;
+}
+
+.stat-delta {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.stat-delta.up { color: var(--green); }
+.stat-delta.down { color: var(--red); }
+.stat-delta.neutral { color: var(--gray-500); }
+
+/* Stat card with CTA (incomplete data state) */
+.stat-card.needs-data {
+  border-style: dashed;
+  border-color: rgba(255,255,255,0.08);
+}
+
+.stat-card .stat-cta {
+  font-size: 0.78rem;
+  color: var(--green);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.stat-card .stat-cta:hover { opacity: 0.75; }
+
+/* ========== CHECK-IN ========== */
+.checkin-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.15rem 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.checkin-card.nudge {
+  background: rgba(245, 158, 11, 0.04);
+  border: 1px solid rgba(245, 158, 11, 0.12);
+}
+
+.checkin-card.ok {
+  background: rgba(34, 197, 94, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.12);
+}
+
+.checkin-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.checkin-icon.amber { background: var(--amber-glow); }
+.checkin-icon.green { background: var(--green-glow); }
+
+.checkin-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.75;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.checkin-icon.amber svg { stroke: var(--amber); }
+.checkin-icon.green svg { stroke: var(--green); }
+
+.checkin-content { flex: 1; }
+
+.checkin-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.1rem; }
+.checkin-sub { font-size: 0.75rem; color: var(--gray-500); }
+
+.checkin-btn {
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--sans);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.checkin-btn.amber { background: var(--amber); color: var(--black); }
+.checkin-btn.green { background: rgba(34,197,94,0.15); color: var(--green); }
+
+/* ========== CONTENT GRID ========== */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.content-card {
+  background: var(--black-card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+
+.content-card.full-width { grid-column: 1 / -1; }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.card-title { font-size: 0.95rem; font-weight: 600; }
+
+.card-link {
+  font-size: 0.78rem;
+  color: var(--green);
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.card-link:hover { opacity: 0.75; }
+
+/* Chart */
+.chart-fake { height: 200px; position: relative; overflow: hidden; }
+
+/* Donut */
+.donut-wrap { display: flex; align-items: center; gap: 1.5rem; }
+.donut-placeholder { width: 150px; height: 150px; margin: 0; position: relative; flex-shrink: 0; }
+.donut-ring { width: 100%; height: 100%; }
+.donut-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.donut-center .pct { font-family: var(--mono); font-size: 1.35rem; font-weight: 600; color: var(--green); }
+.donut-center .pct-label { font-size: 0.68rem; color: var(--gray-500); }
+
+.legend { font-size: 0.78rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.legend-item { display: flex; align-items: center; gap: 0.5rem; }
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+/* Rec mini */
+.rec-mini { display: flex; flex-direction: column; gap: 0.65rem; }
+
+.rec-mini-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 10px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.rec-mini-item:hover { border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+
+.rec-num {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: var(--green-glow);
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.rec-mini-content { flex: 1; min-width: 0; }
+.rec-mini-title { font-size: 0.85rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rec-mini-impact { font-family: var(--mono); font-size: 0.7rem; color: var(--green); }
+
+/* Debt bars */
+.debt-bars { display: flex; flex-direction: column; gap: 0.75rem; }
+.debt-bar-item { display: flex; flex-direction: column; gap: 0.3rem; }
+.debt-bar-top { display: flex; justify-content: space-between; font-size: 0.8rem; }
+.debt-bar-top .name { color: var(--gray-300); }
+.debt-bar-top .amount { font-family: var(--mono); font-size: 0.78rem; color: var(--gray-400); }
+.debt-bar-track { width: 100%; height: 6px; background: rgba(255,255,255,0.06); border-radius: 100px; overflow: hidden; }
+.debt-bar-fill { height: 100%; border-radius: 100px; }
+.debt-bar-fill.high { background: var(--red); }
+.debt-bar-fill.med { background: var(--amber); }
+.debt-bar-fill.low { background: var(--green); }
+.debt-total { display: flex; justify-content: space-between; padding-top: 0.75rem; margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.82rem; }
+.debt-total .label { color: var(--gray-500); }
+.debt-total .amount { font-family: var(--mono); font-weight: 500; }
+
+/* ========== INNER PAGES (stubs) ========== */
+.page-header { margin-bottom: 2rem; }
+.page-header h1 { font-family: var(--serif); font-size: 1.75rem; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+.page-header p { color: var(--gray-400); font-size: 0.9rem; }
+
+.stub-content {
+  background: var(--black-card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--gray-500);
+}
+
+.stub-content h3 { font-size: 1rem; color: var(--gray-300); margin-bottom: 0.5rem; }
+.stub-content p { font-size: 0.85rem; max-width: 380px; margin: 0 auto; line-height: 1.6; }
+
+.stub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.coming-soon-tag {
+  display: inline-flex;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gray-500);
+  background: rgba(255,255,255,0.04);
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  margin-left: 0.75rem;
+  vertical-align: middle;
+}
+
+/* ========== FOOTER ========== */
+.app-footer {
+  margin-left: var(--sidebar-width);
+  padding: 1.5rem 2rem;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.72rem;
+  color: var(--gray-600);
+  text-align: center;
+}
+
+/* ========== DEMO STATE CONTROL ========== */
+.demo-state-bar {
+  position: fixed;
+  bottom: 0;
+  left: var(--sidebar-width);
+  right: 0;
+  background: var(--gray-900);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 0.6rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 100;
+  font-size: 0.75rem;
+}
+
+.demo-state-bar .label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gray-500);
+  flex-shrink: 0;
+}
+
+.demo-state-bar button {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.72rem;
+  font-family: var(--mono);
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--gray-400);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.demo-state-bar button.active {
+  background: var(--green-glow);
+  border-color: rgba(34,197,94,0.3);
+  color: var(--green);
+}
+
+/* ========== MOBILE ========== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 45;
+}
+
+.sidebar-overlay.visible { display: block; }
+
+@media (max-width: 1100px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .topbar { margin-left: 0; padding: 0 1rem; }
+  .hamburger { display: block; }
+  .main { margin-left: 0; padding: 1.25rem; }
+  .app-footer { margin-left: 0; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .content-grid { grid-template-columns: 1fr; }
+  .checkin-card { flex-direction: column; text-align: center; }
+  .demo-state-bar { left: 0; flex-wrap: wrap; justify-content: center; }
+  .pc-steps { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ========== SIDEBAR ========== -->
+<aside class="sidebar" id="sidebar">
+  <a href="/" class="sidebar-logo">
+    <div class="logo-icon">F</div>
+    FreedomStack
+  </a>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" onclick="showPage('dashboard', this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span class="nav-label">Dashboard</span>
+    </button>
+    <div class="nav-section-label">Plan</div>
+    <button class="nav-item" onclick="showPage('calculator', this)">
+      <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg>
+      <span class="nav-label">Calculator</span>
+    </button>
+    <button class="nav-item" onclick="toggleSubmenu('financesMenu', this)" id="financesNav">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span class="nav-label">My Finances</span>
+      <svg class="nav-chevron" viewBox="0 0 24 24" width="14" height="14"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="nav-submenu" id="financesMenu">
+      <button class="nav-item" onclick="showPage('profile', this)">Profile</button>
+      <button class="nav-item" onclick="showPage('expenses', this)">Expenses</button>
+      <button class="nav-item" onclick="showPage('debts', this)">Debts</button>
+      <button class="nav-item" onclick="showPage('investments', this)">Investments</button>
+    </div>
+    <button class="nav-item" onclick="showPage('actionplan', this)">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span class="nav-label">Action Plan</span>
+      <span class="nav-badge green" id="apBadge">3</span>
+    </button>
+    <button class="nav-item" onclick="showPage('scenarios', this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span class="nav-label">Scenarios</span>
+      <span class="nav-badge coming">Soon</span>
+    </button>
+    <div class="nav-section-label">Track</div>
+    <button class="nav-item" onclick="showPage('progress', this)">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span class="nav-label">Progress</span>
+      <span class="nav-badge amber" id="progressBadge">Update</span>
+    </button>
+    <div class="nav-section-label">Learn</div>
+    <button class="nav-item" onclick="showPage('resources', this)">
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span class="nav-label">Resources</span>
+      <span class="nav-badge coming">Soon</span>
+    </button>
+    <div class="nav-section-label"></div>
+    <button class="nav-item" onclick="showPage('settings', this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="nav-label">Settings</span>
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">MJ</div>
+      <div class="user-info">
+        <div class="user-name">Marcus Johnson</div>
+        <div class="user-email">marcus@email.com</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ========== TOPBAR ========== -->
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:0.75rem;">
+    <button class="hamburger" onclick="toggleMobileSidebar()">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <span class="topbar-title" id="topbarTitle">Dashboard</span>
+  </div>
+  <div class="topbar-right">
+    <button class="topbar-btn">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="notif-dot"></span>
+    </button>
+  </div>
+</header>
+
+<!-- ========== MAIN ========== -->
+<main class="main">
+
+  <!-- ==================== DASHBOARD ==================== -->
+  <div class="page active" id="page-dashboard">
+
+    <div class="dash-welcome">
+      <h1 id="welcomeMsg">Welcome back, Marcus</h1>
+      <p id="welcomeSub">Here's where you stand as of February 2026.</p>
+    </div>
+
+    <!-- Profile completeness (shown when incomplete) -->
+    <div class="profile-completion" id="profileCompletion">
+      <div class="pc-header">
+        <h3>Complete your profile to unlock your full action plan</h3>
+        <span class="pc-pct" id="pcPct">40% complete</span>
+      </div>
+      <div class="pc-bar-track">
+        <div class="pc-bar-fill" id="pcBarFill" style="width: 40%;"></div>
+      </div>
+      <div class="pc-steps" id="pcSteps">
+        <div class="pc-step done">
+          <div class="pc-step-icon complete">✓</div>
+          <div class="pc-step-text">
+            <div class="pc-step-title">Expenses</div>
+            <div class="pc-step-sub">Monthly expenses entered</div>
+          </div>
+        </div>
+        <div class="pc-step done">
+          <div class="pc-step-icon complete">✓</div>
+          <div class="pc-step-text">
+            <div class="pc-step-title">Freedom Number</div>
+            <div class="pc-step-sub">Calculated at $960,000</div>
+          </div>
+        </div>
+        <div class="pc-step" onclick="showPage('profile', document.querySelector('[onclick*=profile]'))">
+          <div class="pc-step-icon pending">3</div>
+          <div class="pc-step-text">
+            <div class="pc-step-title">Income details</div>
+            <div class="pc-step-sub">Needed for timeline calculation</div>
+          </div>
+          <span class="pc-step-time">~1 min</span>
+        </div>
+        <div class="pc-step" onclick="showPage('debts', document.querySelector('[onclick*=debts]'))">
+          <div class="pc-step-icon pending">4</div>
+          <div class="pc-step-text">
+            <div class="pc-step-title">Add your debts</div>
+            <div class="pc-step-sub">Needed for payoff strategy</div>
+          </div>
+          <span class="pc-step-time">~2 min</span>
+        </div>
+        <div class="pc-step" onclick="showPage('investments', document.querySelector('[onclick*=investments]'))">
+          <div class="pc-step-icon pending">5</div>
+          <div class="pc-step-text">
+            <div class="pc-step-title">Add savings & investments</div>
+            <div class="pc-step-sub">Needed for net worth & optimization</div>
+          </div>
+          <span class="pc-step-time">~2 min</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Freedom Number</span>
+          <div class="stat-icon green">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+        </div>
+        <div class="stat-value" style="color: var(--green);">$960,000</div>
+        <div class="stat-delta neutral">at 4% safe withdrawal rate</div>
+      </div>
+
+      <div class="stat-card" id="nwCard">
+        <div class="stat-top">
+          <span class="stat-label">Net Worth</span>
+          <div class="stat-icon amber">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+        </div>
+        <div class="stat-value" id="nwValue">-$34,000</div>
+        <div class="stat-delta up" id="nwDelta">↑ $2,400 since Jan</div>
+      </div>
+
+      <div class="stat-card" id="fpCard">
+        <div class="stat-top">
+          <span class="stat-label">Freedom Progress</span>
+          <div class="stat-icon blue">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+        </div>
+        <div class="stat-value" id="fpValue">2.9%</div>
+        <div class="stat-delta up" id="fpDelta">↑ 0.3% since Jan</div>
+      </div>
+
+      <div class="stat-card" id="ttfCard">
+        <div class="stat-top">
+          <span class="stat-label">Time to Freedom</span>
+          <div class="stat-icon green">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+        <div class="stat-value" id="ttfValue">18 yr 4 mo</div>
+        <div class="stat-delta up" id="ttfDelta">↑ 3 mo faster vs Jan</div>
+      </div>
+    </div>
+
+    <!-- Check-in -->
+    <div id="checkinArea">
+      <div class="checkin-card nudge" id="checkinCard">
+        <div class="checkin-icon amber">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="checkin-content">
+          <div class="checkin-title">Time for your February check-in</div>
+          <div class="checkin-sub">Last updated January 18. Takes about 60 seconds.</div>
+        </div>
+        <button class="checkin-btn amber">Update now</button>
+      </div>
+    </div>
+
+    <!-- Content grid -->
+    <div class="content-grid">
+      <div class="content-card">
+        <div class="card-header">
+          <span class="card-title">Your journey</span>
+          <span class="card-link" onclick="showPage('progress', document.querySelector('[onclick*=progress]'))">View all →</span>
+        </div>
+        <div class="chart-fake" id="journeyChart">
+          <svg viewBox="0 0 400 200" preserveAspectRatio="none">
+            <line x1="0" y1="20" x2="400" y2="20" stroke="rgba(34,197,94,0.2)" stroke-width="1" stroke-dasharray="6,4"/>
+            <text x="390" y="16" fill="rgba(34,197,94,0.4)" font-size="8" text-anchor="end" font-family="JetBrains Mono">$960K</text>
+            <path d="M0,190 L50,188 L100,185 L150,180 L200,174 L250,168 L300,160 L350,155 L400,148" fill="none" stroke="var(--green)" stroke-width="2"/>
+            <path d="M0,190 L50,188 L100,185 L150,180 L200,174 L250,168 L300,160 L350,155 L400,148 L400,200 L0,200Z" fill="url(#gG)" opacity="0.3"/>
+            <defs><linearGradient id="gG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--green)"/><stop offset="100%" stop-color="transparent"/></linearGradient></defs>
+            <line x1="0" y1="199" x2="400" y2="199" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="card-header">
+          <span class="card-title">Monthly expenses</span>
+          <span class="card-link" onclick="showPage('expenses', document.querySelector('[onclick*=expenses]'))">Manage →</span>
+        </div>
+        <div class="donut-wrap">
+          <div class="donut-placeholder">
+            <svg class="donut-ring" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="60" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="14"/>
+              <circle cx="80" cy="80" r="60" fill="none" stroke="var(--green)" stroke-width="14" stroke-dasharray="168 209" stroke-dashoffset="0" transform="rotate(-90 80 80)"/>
+              <circle cx="80" cy="80" r="60" fill="none" stroke="var(--blue)" stroke-width="14" stroke-dasharray="47 330" stroke-dashoffset="-168" transform="rotate(-90 80 80)"/>
+              <circle cx="80" cy="80" r="60" fill="none" stroke="var(--amber)" stroke-width="14" stroke-dasharray="59 318" stroke-dashoffset="-215" transform="rotate(-90 80 80)"/>
+              <circle cx="80" cy="80" r="60" fill="none" stroke="var(--red)" stroke-width="14" stroke-dasharray="47 330" stroke-dashoffset="-274" transform="rotate(-90 80 80)"/>
+            </svg>
+            <div class="donut-center">
+              <div class="pct">$3,200</div>
+              <div class="pct-label">/ month</div>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> Housing $1,500</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--blue)"></span> Debt payments $500</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span> Food $500</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--red)"></span> Other $700</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card" id="recsCard">
+        <div class="card-header">
+          <span class="card-title">Top recommendations</span>
+          <span class="card-link" onclick="showPage('actionplan', document.querySelector('[onclick*=actionplan]'))">Full plan →</span>
+        </div>
+        <div class="rec-mini" id="recsList">
+          <div class="rec-mini-item">
+            <span class="rec-num">1</span>
+            <div class="rec-mini-content">
+              <div class="rec-mini-title">Max your 401K employer match</div>
+              <div class="rec-mini-impact">Saves 3.2 years</div>
+            </div>
+          </div>
+          <div class="rec-mini-item">
+            <span class="rec-num">2</span>
+            <div class="rec-mini-content">
+              <div class="rec-mini-title">Eliminate credit card debt</div>
+              <div class="rec-mini-impact">Saves 2.8 years</div>
+            </div>
+          </div>
+          <div class="rec-mini-item">
+            <span class="rec-num">3</span>
+            <div class="rec-mini-content">
+              <div class="rec-mini-title">Negotiate a 10-15% raise</div>
+              <div class="rec-mini-impact">Saves 8.5 years</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card" id="debtCard">
+        <div class="card-header">
+          <span class="card-title">Debt snapshot</span>
+          <span class="card-link" onclick="showPage('debts', document.querySelector('[onclick*=debts]'))">Details →</span>
+        </div>
+        <div class="debt-bars" id="debtBars">
+          <div class="debt-bar-item">
+            <div class="debt-bar-top"><span class="name">Student loans</span><span class="amount">$42,000</span></div>
+            <div class="debt-bar-track"><div class="debt-bar-fill med" style="width: 68%;"></div></div>
+          </div>
+          <div class="debt-bar-item">
+            <div class="debt-bar-top"><span class="name">Credit card</span><span class="amount">$5,500</span></div>
+            <div class="debt-bar-track"><div class="debt-bar-fill high" style="width: 88%;"></div></div>
+          </div>
+          <div class="debt-bar-item">
+            <div class="debt-bar-top"><span class="name">Auto loan</span><span class="amount">$12,500</span></div>
+            <div class="debt-bar-track"><div class="debt-bar-fill low" style="width: 45%;"></div></div>
+          </div>
+          <div class="debt-total">
+            <span class="label">Total remaining</span>
+            <span class="amount">$60,000</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STUBS ==================== -->
+  <div class="page" id="page-calculator">
+    <div class="page-header"><h1>Calculator</h1><p>Recalculate your Freedom Number anytime. Previous calculations saved to history.</p></div>
+    <div class="stub-content"><h3>Freedom Number Calculator</h3><p>Same calculator from the public flow with auto-save and calculation history.</p></div>
+  </div>
+  <div class="page" id="page-profile">
+    <div class="page-header"><h1>Profile</h1><p>Your personal and income information.</p></div>
+    <div class="stub-grid">
+      <div class="stub-content"><h3>Personal Information</h3><p>Name, age, filing status, state, risk tolerance, target freedom age.</p></div>
+      <div class="stub-content"><h3>Income</h3><p>Monthly gross, net, income type, side income.</p></div>
+      <div class="stub-content"><h3>Freedom Preferences</h3><p>Withdrawal rate, lifestyle level, inflation assumption.</p></div>
+    </div>
+  </div>
+  <div class="page" id="page-expenses">
+    <div class="page-header"><h1>Expenses</h1><p>Track monthly expenses by category. Feeds directly into your Freedom Number.</p></div>
+    <div class="stub-content"><h3>Expense Manager</h3><p>Data table with categories, amounts, essential/discretionary toggles. Add, edit, delete. Running totals.</p></div>
+  </div>
+  <div class="page" id="page-debts">
+    <div class="page-header"><h1>Debts</h1><p>Manage debts and see optimized payoff strategies.</p></div>
+    <div class="stub-grid">
+      <div class="stub-content"><h3>Debt List</h3><p>All debts as cards. Type, balance, APR, minimum payment. Federal student loan flagging.</p></div>
+      <div class="stub-content"><h3>Payoff Strategy</h3><p>Avalanche vs. snowball side by side. Timeline, total interest, monthly schedule.</p></div>
+    </div>
+  </div>
+  <div class="page" id="page-investments">
+    <div class="page-header"><h1>Investments</h1><p>Savings and investment accounts with contribution optimization.</p></div>
+    <div class="stub-grid">
+      <div class="stub-content"><h3>Account List</h3><p>401K, IRA, HSA, brokerage, HYSA. Balance, contributions, employer match.</p></div>
+      <div class="stub-content"><h3>Contribution Priority</h3><p>Recommended order with status indicators showing current vs. optimal.</p></div>
+    </div>
+  </div>
+  <div class="page" id="page-actionplan">
+    <div class="page-header"><h1>Action Plan</h1><p>AI-generated recommendations. Toggle levers to see real-time timeline impact.</p></div>
+    <div class="stub-grid">
+      <div class="stub-content"><h3>AI Recommendations</h3><p>Up to 5 prioritized cards. Why it matters, what to do, timeline impact, lever toggle.</p></div>
+      <div class="stub-content"><h3>Timeline Impact</h3><p>Sticky panel. Current vs. optimized timeline. Per-lever breakdown. Total years saved.</p></div>
+    </div>
+  </div>
+  <div class="page" id="page-scenarios">
+    <div class="page-header"><h1>Scenarios <span class="coming-soon-tag">Coming soon</span></h1><p>Model what-if life events and see timeline impact.</p></div>
+    <div class="stub-content"><h3>What-if modeling</h3><p>Slider-based scenarios. Raise, relocation, refinancing, side income. Side-by-side comparison.</p></div>
+  </div>
+  <div class="page" id="page-progress">
+    <div class="page-header"><h1>Progress</h1><p>Monthly check-ins and long-term tracking.</p></div>
+    <div class="stub-grid">
+      <div class="stub-content"><h3>Monthly Check-In</h3><p>Pre-filled form. Update what changed. 60 seconds. Celebration on save.</p></div>
+      <div class="stub-content"><h3>Charts</h3><p>Net worth over time, debt reduction, savings growth, freedom % radial.</p></div>
+      <div class="stub-content"><h3>History</h3><p>All past snapshots in a sortable table. CSV export.</p></div>
+    </div>
+  </div>
+  <div class="page" id="page-resources">
+    <div class="page-header"><h1>Resources <span class="coming-soon-tag">Coming soon</span></h1><p>Curated financial education.</p></div>
+    <div class="stub-content"><h3>Library</h3><p>4% Rule. Student loan playbook. 401K vs Roth. HYSA vs I-Bonds. First portfolio. Avalanche vs snowball.</p></div>
+  </div>
+  <div class="page" id="page-settings">
+    <div class="page-header"><h1>Settings</h1><p>Account, preferences, notifications, data.</p></div>
+    <div class="stub-grid">
+      <div class="stub-content"><h3>Account</h3><p>Name, email, password, delete account.</p></div>
+      <div class="stub-content"><h3>Preferences</h3><p>Withdrawal rate, inflation, dark mode.</p></div>
+      <div class="stub-content"><h3>Notifications</h3><p>Check-in reminders, alerts, milestones.</p></div>
+      <div class="stub-content"><h3>Data & Privacy</h3><p>Export data. Privacy statement.</p></div>
+    </div>
+  </div>
+</main>
+
+<div class="app-footer">
+  FreedomStack provides financial information for educational purposes only. This is not financial, investment, or tax advice.
+</div>
+
+<!-- ========== DEMO STATE BAR ========== -->
+<div class="demo-state-bar">
+  <span class="label">Profile state:</span>
+  <button class="active" onclick="setState('partial', this)">Partial (new user)</button>
+  <button onclick="setState('complete', this)">Complete (returning)</button>
+</div>
+
+<!-- ========== SCRIPTS ========== -->
+<script>
+const pageTitles = {
+  dashboard:'Dashboard', calculator:'Calculator', profile:'My Finances — Profile',
+  expenses:'My Finances — Expenses', debts:'My Finances — Debts', investments:'My Finances — Investments',
+  actionplan:'Action Plan', scenarios:'Scenarios', progress:'Progress', resources:'Resources', settings:'Settings'
+};
+
+function showPage(pageId, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + pageId);
+  if (target) { target.classList.remove('active'); void target.offsetWidth; target.classList.add('active'); }
+  document.querySelectorAll('.sidebar-nav .nav-item').forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  document.getElementById('topbarTitle').textContent = pageTitles[pageId] || pageId;
+  if (['profile','expenses','debts','investments'].includes(pageId)) {
+    document.getElementById('financesMenu').classList.add('open');
+    document.querySelector('#financesNav .nav-chevron').classList.add('open');
+  }
+  closeSidebar();
+}
+
+function toggleSubmenu(menuId, navEl) {
+  document.getElementById(menuId).classList.toggle('open');
+  const ch = navEl.querySelector('.nav-chevron');
+  if (ch) ch.classList.toggle('open');
+}
+
+function toggleMobileSidebar() {
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+  document.getElementById('sidebarOverlay').classList.toggle('visible');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebarOverlay').classList.remove('visible');
+}
+
+// ---- Profile state management ----
+function setState(state, btn) {
+  document.querySelectorAll('.demo-state-bar button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const pc = document.getElementById('profileCompletion');
+  const nwCard = document.getElementById('nwCard');
+  const nwValue = document.getElementById('nwValue');
+  const nwDelta = document.getElementById('nwDelta');
+  const fpValue = document.getElementById('fpValue');
+  const fpDelta = document.getElementById('fpDelta');
+  const ttfValue = document.getElementById('ttfValue');
+  const ttfDelta = document.getElementById('ttfDelta');
+  const checkinCard = document.getElementById('checkinCard');
+  const recsCard = document.getElementById('recsCard');
+  const recsList = document.getElementById('recsList');
+  const debtCard = document.getElementById('debtCard');
+  const debtBars = document.getElementById('debtBars');
+  const welcomeMsg = document.getElementById('welcomeMsg');
+  const welcomeSub = document.getElementById('welcomeSub');
+  const apBadge = document.getElementById('apBadge');
+  const progressBadge = document.getElementById('progressBadge');
+
+  if (state === 'partial') {
+    // New user — partial profile
+    welcomeMsg.textContent = "Welcome to FreedomStack, Marcus";
+    welcomeSub.textContent = "Your Freedom Number is set. Complete your profile to unlock personalized recommendations.";
+
+    pc.style.display = 'block';
+
+    // Net worth — no data
+    nwCard.classList.add('needs-data');
+    nwValue.textContent = '—';
+    nwValue.style.color = 'var(--gray-600)';
+    nwDelta.innerHTML = '<span class="stat-cta" onclick="showPage(\'debts\', document.querySelector(\'[onclick*=debts]\'))">Add debts & savings to calculate →</span>';
+    nwDelta.className = 'stat-delta';
+
+    // Freedom progress — partial
+    fpValue.textContent = '—';
+    fpValue.style.color = 'var(--gray-600)';
+    fpDelta.innerHTML = '<span style="color:var(--gray-500)">Needs net worth data</span>';
+    fpDelta.className = 'stat-delta';
+
+    // Time to freedom — needs income
+    ttfValue.textContent = '—';
+    ttfValue.style.color = 'var(--gray-600)';
+    ttfDelta.innerHTML = '<span class="stat-cta" onclick="showPage(\'profile\', document.querySelector(\'[onclick*=profile]\'))">Add income to calculate →</span>';
+    ttfDelta.className = 'stat-delta';
+
+    // Check-in — not applicable yet
+    checkinCard.className = 'checkin-card ok';
+    checkinCard.innerHTML = `
+      <div class="checkin-icon green">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="checkin-content">
+        <div class="checkin-title">You're just getting started</div>
+        <div class="checkin-sub">Complete your profile first. Monthly check-ins begin after your first full month.</div>
+      </div>
+      <button class="checkin-btn green">Got it</button>
+    `;
+
+    // Recommendations — locked
+    recsList.innerHTML = `
+      <div style="text-align:center; padding: 1.5rem 0; color: var(--gray-500); font-size: 0.85rem;">
+        <svg width="32" height="32" viewBox="0 0 24 24" stroke="var(--gray-600)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.5rem;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <div style="margin-bottom: 0.25rem; color: var(--gray-400); font-weight: 500;">Complete your profile to unlock</div>
+        <div>We need your income, debts, and savings to generate personalized recommendations.</div>
+      </div>
+    `;
+
+    // Debts — no data
+    debtBars.innerHTML = `
+      <div style="text-align:center; padding: 1.5rem 0; color: var(--gray-500); font-size: 0.85rem;">
+        <div style="margin-bottom: 0.25rem; color: var(--gray-400); font-weight: 500;">No debts added yet</div>
+        <div>Add your debts to see payoff strategies and optimization opportunities.</div>
+        <div style="margin-top: 0.75rem;">
+          <span style="color: var(--green); cursor: pointer; font-size: 0.82rem;" onclick="showPage('debts', document.querySelector('[onclick*=debts]'))">Add your first debt →</span>
+        </div>
+      </div>
+    `;
+
+    // Badges
+    apBadge.style.display = 'none';
+    progressBadge.style.display = 'none';
+
+  } else {
+    // Complete profile — returning user
+    welcomeMsg.textContent = "Welcome back, Marcus";
+    welcomeSub.textContent = "Here's where you stand as of February 2026.";
+
+    pc.style.display = 'none';
+
+    nwCard.classList.remove('needs-data');
+    nwValue.textContent = '-$34,000';
+    nwValue.style.color = '';
+    nwDelta.innerHTML = '↑ $2,400 since Jan';
+    nwDelta.className = 'stat-delta up';
+
+    fpValue.textContent = '2.9%';
+    fpValue.style.color = '';
+    fpDelta.innerHTML = '↑ 0.3% since Jan';
+    fpDelta.className = 'stat-delta up';
+
+    ttfValue.textContent = '18 yr 4 mo';
+    ttfValue.style.color = '';
+    ttfDelta.innerHTML = '↑ 3 mo faster vs Jan';
+    ttfDelta.className = 'stat-delta up';
+
+    checkinCard.className = 'checkin-card nudge';
+    checkinCard.innerHTML = `
+      <div class="checkin-icon amber">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="checkin-content">
+        <div class="checkin-title">Time for your February check-in</div>
+        <div class="checkin-sub">Last updated January 18. Takes about 60 seconds.</div>
+      </div>
+      <button class="checkin-btn amber">Update now</button>
+    `;
+
+    recsList.innerHTML = `
+      <div class="rec-mini-item"><span class="rec-num">1</span><div class="rec-mini-content"><div class="rec-mini-title">Max your 401K employer match</div><div class="rec-mini-impact">Saves 3.2 years</div></div></div>
+      <div class="rec-mini-item"><span class="rec-num">2</span><div class="rec-mini-content"><div class="rec-mini-title">Eliminate credit card debt</div><div class="rec-mini-impact">Saves 2.8 years</div></div></div>
+      <div class="rec-mini-item"><span class="rec-num">3</span><div class="rec-mini-content"><div class="rec-mini-title">Negotiate a 10-15% raise</div><div class="rec-mini-impact">Saves 8.5 years</div></div></div>
+    `;
+
+    debtBars.innerHTML = `
+      <div class="debt-bar-item"><div class="debt-bar-top"><span class="name">Student loans</span><span class="amount">$42,000</span></div><div class="debt-bar-track"><div class="debt-bar-fill med" style="width:68%"></div></div></div>
+      <div class="debt-bar-item"><div class="debt-bar-top"><span class="name">Credit card</span><span class="amount">$5,500</span></div><div class="debt-bar-track"><div class="debt-bar-fill high" style="width:88%"></div></div></div>
+      <div class="debt-bar-item"><div class="debt-bar-top"><span class="name">Auto loan</span><span class="amount">$12,500</span></div><div class="debt-bar-track"><div class="debt-bar-fill low" style="width:45%"></div></div></div>
+      <div class="debt-total"><span class="label">Total remaining</span><span class="amount">$60,000</span></div>
+    `;
+
+    apBadge.style.display = '';
+    progressBadge.style.display = '';
+  }
+}
+</script>
+
+</body>
+</html>

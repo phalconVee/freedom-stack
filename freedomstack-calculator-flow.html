@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreedomStack — Calculate Your Freedom Number</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0a0a0a;
+  --white: #fafaf9;
+  --green: #22c55e;
+  --green-dim: #166534;
+  --green-glow: rgba(34, 197, 94, 0.12);
+  --green-glow-strong: rgba(34, 197, 94, 0.25);
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --gray-300: #d4d4d8;
+  --gray-400: #a1a1aa;
+  --gray-500: #71717a;
+  --gray-600: #52525b;
+  --gray-800: #27272a;
+  --gray-900: #18181b;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--green);
+  color: var(--black);
+}
+
+/* ========== NAV ========== */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.logo {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--white);
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--green);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: var(--black);
+  font-weight: 700;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-right a {
+  color: var(--gray-400);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.nav-right a:hover { color: var(--white); }
+
+/* ========== FLOW CONTAINER ========== */
+.flow-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 7rem 2rem 4rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ========== SCREENS ========== */
+.screen {
+  display: none;
+  animation: screenIn 0.6s ease both;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== PROGRESS BAR ========== */
+.progress-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+}
+
+.progress-step {
+  height: 3px;
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border-radius: 100px;
+  overflow: hidden;
+  transition: all 0.5s;
+}
+
+.progress-step .fill {
+  height: 100%;
+  width: 0%;
+  background: var(--green);
+  border-radius: 100px;
+  transition: width 0.6s ease;
+}
+
+.progress-step.complete .fill {
+  width: 100%;
+}
+
+.progress-step.current .fill {
+  width: 50%;
+  background: var(--green);
+}
+
+.progress-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--gray-600);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* ========== SCREEN 1: EXPENSES ========== */
+.screen-title {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.screen-subtitle {
+  color: var(--gray-400);
+  font-size: 1.05rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+/* Mode toggle */
+.mode-toggle {
+  display: inline-flex;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 2rem;
+}
+
+.mode-btn {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+  font-family: var(--sans);
+  border: none;
+  background: transparent;
+  color: var(--gray-400);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.25s;
+}
+
+.mode-btn.active {
+  background: rgba(255,255,255,0.1);
+  color: var(--white);
+}
+
+/* Simple input */
+.simple-input-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.dollar-sign {
+  font-family: var(--mono);
+  font-size: 2.5rem;
+  color: var(--gray-500);
+}
+
+.big-input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid rgba(255,255,255,0.12);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 500;
+  width: 280px;
+  padding: 0.25rem 0;
+  outline: none;
+  transition: border-color 0.3s;
+  letter-spacing: -0.02em;
+}
+
+.big-input:focus {
+  border-color: var(--green);
+}
+
+.input-helper {
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  margin-top: 0.25rem;
+}
+
+/* Category inputs */
+.category-grid {
+  display: none;
+}
+
+.category-grid.visible {
+  display: block;
+}
+
+.category-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.category-row:last-child {
+  border-bottom: none;
+}
+
+.cat-icon {
+  font-size: 1.25rem;
+  width: 36px;
+  text-align: center;
+}
+
+.cat-name {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.cat-name .essential-badge {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--green-dim);
+  background: var(--green-glow);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.cat-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cat-dollar {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--gray-600);
+}
+
+.cat-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 1rem;
+  width: 90px;
+  padding: 0.25rem 0;
+  outline: none;
+  text-align: right;
+  transition: border-color 0.2s;
+}
+
+.cat-input:focus {
+  border-color: var(--green);
+}
+
+.category-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding: 1rem 0;
+  border-top: 2px solid rgba(255,255,255,0.08);
+}
+
+.category-total .label {
+  font-size: 0.85rem;
+  color: var(--gray-400);
+}
+
+.category-total .amount {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--green);
+}
+
+/* ========== SCREEN 2: LIFESTYLE ========== */
+.lifestyle-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.lifestyle-card {
+  background: rgba(255,255,255,0.02);
+  border: 2px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 1.75rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-align: center;
+}
+
+.lifestyle-card:hover {
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.04);
+}
+
+.lifestyle-card.selected {
+  border-color: var(--green);
+  background: var(--green-glow);
+}
+
+.lifestyle-card .icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.lifestyle-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.lifestyle-card p {
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  line-height: 1.5;
+}
+
+.lifestyle-card .calc-amount {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--green);
+  margin-top: 0.75rem;
+  opacity: 0.8;
+}
+
+/* ========== SCREEN 3: RESULTS (THE BIG REVEAL) ========== */
+.results-container {
+  text-align: center;
+  position: relative;
+}
+
+/* Glow behind number */
+.results-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--green-glow-strong) 0%, transparent 65%);
+  pointer-events: none;
+  opacity: 0;
+  animation: glowIn 1.5s ease 0.8s forwards;
+}
+
+@keyframes glowIn {
+  to { opacity: 1; }
+}
+
+.results-pre-label {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--gray-500);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease 0.2s forwards;
+}
+
+/* Animated number */
+.freedom-number-display {
+  font-family: var(--mono);
+  font-size: clamp(3.5rem, 10vw, 6.5rem);
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: -0.03em;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  animation: numberReveal 0.8s ease 0.5s forwards;
+  margin-bottom: 0.25rem;
+}
+
+@keyframes numberReveal {
+  0% { opacity: 0; transform: scale(0.8) translateY(20px); filter: blur(10px); }
+  60% { opacity: 1; transform: scale(1.02) translateY(-4px); filter: blur(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+}
+
+.rate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  padding: 0.35rem 0.85rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 100px;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease 1.1s forwards;
+}
+
+.rate-badge .dot {
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+}
+
+/* Context message */
+.results-context {
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+  opacity: 0;
+  animation: fadeInUp 0.6s ease 1.4s forwards;
+}
+
+.results-context p {
+  font-size: 1.1rem;
+  color: var(--gray-300);
+  line-height: 1.7;
+}
+
+.results-context strong {
+  color: var(--white);
+}
+
+.results-context em {
+  color: var(--green);
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* Range cards */
+.range-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: fadeInUp 0.6s ease 1.8s forwards;
+}
+
+.range-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 1.15rem;
+  transition: all 0.2s;
+}
+
+.range-card.highlight {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.range-card .rate-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gray-500);
+  margin-bottom: 0.25rem;
+}
+
+.range-card .range-amount {
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.range-card .range-note {
+  font-size: 0.7rem;
+  color: var(--gray-600);
+  margin-top: 0.15rem;
+}
+
+.range-card.highlight .range-amount {
+  color: var(--green);
+}
+
+/* Divider line */
+.results-divider {
+  width: 60px;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  margin: 0 auto 2.5rem;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease 2.1s forwards;
+}
+
+/* CTA section */
+.results-cta {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease 2.3s forwards;
+}
+
+.results-cta h3 {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.results-cta h3 em {
+  font-style: italic;
+  color: var(--green);
+}
+
+.results-cta .cta-sub {
+  color: var(--gray-400);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.results-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--green);
+  color: var(--black);
+  padding: 1rem 2.25rem;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s;
+  border: none;
+  cursor: pointer;
+  font-family: var(--sans);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(34, 197, 94, 0.3);
+}
+
+.btn-primary .arrow {
+  transition: transform 0.2s;
+}
+
+.btn-primary:hover .arrow {
+  transform: translateX(3px);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--gray-400);
+  padding: 0.75rem 1.75rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: all 0.25s;
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  border-color: rgba(255,255,255,0.2);
+  color: var(--white);
+}
+
+.fine-print {
+  font-size: 0.78rem;
+  color: var(--gray-600);
+  margin-top: 0.5rem;
+}
+
+/* ========== SCREEN 4: ACTION PLAN PREVIEW ========== */
+.plan-preview {
+  text-align: left;
+}
+
+.plan-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.plan-header .screen-title {
+  margin-bottom: 0.5rem;
+}
+
+.plan-header .screen-subtitle {
+  margin-bottom: 0;
+}
+
+/* Gap visualization */
+.gap-visual {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease 0.2s forwards;
+}
+
+.gap-endpoints {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.gap-point {
+  text-align: center;
+}
+
+.gap-point .gap-label {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--mono);
+  margin-bottom: 0.35rem;
+}
+
+.gap-point .gap-amount {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.gap-point .gap-amount.current {
+  color: var(--amber);
+}
+
+.gap-point .gap-amount.target {
+  color: var(--green);
+}
+
+.gap-arrow {
+  color: var(--gray-600);
+  font-size: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.gap-bar-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.gap-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber), var(--green));
+  border-radius: 100px;
+  width: 0%;
+  animation: barFill 1.5s ease 0.8s forwards;
+}
+
+@keyframes barFill {
+  to { width: var(--fill-pct); }
+}
+
+.gap-stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.gap-stat-row .label { color: var(--gray-500); }
+.gap-stat-row .value {
+  font-family: var(--mono);
+  color: var(--white);
+}
+
+/* Loading state for AI */
+.ai-loading {
+  text-align: center;
+  padding: 3rem 1rem;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease 0.6s forwards;
+}
+
+.ai-loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255,255,255,0.06);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ai-loading h3 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+}
+
+.ai-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.ai-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  transition: all 0.4s;
+}
+
+.ai-step.active {
+  color: var(--gray-300);
+}
+
+.ai-step.done {
+  color: var(--green);
+}
+
+.ai-step-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  transition: all 0.4s;
+  flex-shrink: 0;
+}
+
+.ai-step.active .ai-step-dot {
+  border-color: var(--green);
+  background: var(--green-glow);
+}
+
+.ai-step.done .ai-step-dot {
+  border-color: var(--green);
+  background: var(--green);
+  color: var(--black);
+}
+
+/* Recommendation cards (after loading) */
+.plan-results {
+  display: none;
+}
+
+.plan-results.visible {
+  display: block;
+  animation: screenIn 0.6s ease both;
+}
+
+.plan-summary-card {
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: 14px;
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  color: var(--gray-300);
+  line-height: 1.7;
+}
+
+.plan-summary-card strong {
+  color: var(--white);
+}
+
+.rec-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 1.75rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s;
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.rec-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.rec-card:hover {
+  border-color: rgba(255,255,255,0.12);
+}
+
+.rec-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.rec-priority {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gray-500);
+}
+
+.rec-impact {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--green);
+  background: var(--green-glow);
+  padding: 0.2rem 0.7rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.rec-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.rec-description {
+  font-size: 0.88rem;
+  color: var(--gray-400);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+}
+
+.rec-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.rec-action {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--gray-400);
+}
+
+.rec-action .checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.rec-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.confidence {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.confidence.high { color: var(--green); }
+.confidence.medium { color: var(--amber); }
+
+.toggle-lever {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  cursor: pointer;
+}
+
+.toggle-switch {
+  width: 36px;
+  height: 20px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 100px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: var(--white);
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.toggle-lever.active .toggle-switch {
+  background: var(--green);
+}
+
+.toggle-lever.active .toggle-switch::after {
+  transform: translateX(16px);
+}
+
+/* Timeline sticky panel */
+.timeline-panel {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 1.75rem;
+  margin-top: 2rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.timeline-panel.visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.5s ease;
+}
+
+.timeline-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gray-500);
+  margin-bottom: 0.5rem;
+}
+
+.timeline-before {
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--gray-500);
+  text-decoration: line-through;
+  margin-bottom: 0.15rem;
+}
+
+.timeline-after {
+  font-family: var(--mono);
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: -0.02em;
+}
+
+.timeline-saved {
+  font-size: 0.85rem;
+  color: var(--gray-400);
+  margin-top: 0.5rem;
+}
+
+.timeline-saved strong {
+  color: var(--green);
+}
+
+.plan-final-cta {
+  text-align: center;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.plan-final-cta.visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.5s ease;
+}
+
+.plan-final-cta h3 {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.plan-final-cta p {
+  color: var(--gray-400);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ========== GENERAL ========== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--white);
+  color: var(--black);
+  padding: 0.85rem 2rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.25s;
+  margin-top: 2rem;
+}
+
+.btn-next:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(255,255,255,0.1);
+}
+
+.btn-next .arrow {
+  transition: transform 0.2s;
+}
+
+.btn-next:hover .arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 768px) {
+  .flow-container { padding: 6rem 1.25rem 3rem; }
+  .lifestyle-cards { grid-template-columns: 1fr; }
+  .range-strip { grid-template-columns: 1fr; }
+  .big-input { width: 180px; font-size: 2.5rem; }
+  .gap-endpoints { flex-direction: column; gap: 1rem; align-items: center; }
+  .gap-arrow { transform: rotate(90deg); }
+  .rec-header { flex-direction: column; gap: 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-icon">F</div>
+    FreedomStack
+  </a>
+  <div class="nav-right">
+    <a href="/login">Log in</a>
+  </div>
+</nav>
+
+<!-- ========== FLOW ========== -->
+<div class="flow-container">
+
+  <!-- Progress Bar -->
+  <div class="progress-bar" id="progressBar">
+    <div class="progress-step current" id="prog1"><div class="fill"></div></div>
+    <div class="progress-step" id="prog2"><div class="fill"></div></div>
+    <div class="progress-step" id="prog3"><div class="fill"></div></div>
+    <div class="progress-step" id="prog4"><div class="fill"></div></div>
+    <span class="progress-label" id="progLabel">Step 1 of 3</span>
+  </div>
+
+  <!-- ==================== SCREEN 1: EXPENSES ==================== -->
+  <div class="screen active" id="screen1">
+    <h1 class="screen-title">What does your life cost each month?</h1>
+    <p class="screen-subtitle">Include everything — rent, groceries, loans, subscriptions, the coffee habit you're not ready to talk about. No judgment.</p>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('simple')">Simple</button>
+      <button class="mode-btn" onclick="setMode('detailed')">Detailed</button>
+    </div>
+
+    <!-- Simple Mode -->
+    <div id="simpleMode">
+      <div class="simple-input-wrap">
+        <span class="dollar-sign">$</span>
+        <input type="text" class="big-input" id="simpleExpense" value="3,200" inputmode="numeric">
+      </div>
+      <p class="input-helper">per month, roughly. You can get specific later.</p>
+    </div>
+
+    <!-- Detailed Mode -->
+    <div class="category-grid" id="detailedMode">
+      <div class="category-row">
+        <span class="cat-icon">🏠</span>
+        <span class="cat-name">Housing <span class="essential-badge">essential</span></span>
+        <div class="cat-input-wrap"><span class="cat-dollar">$</span><input type="text" class="cat-input" data-cat value="1,500"></div>
+      </div>
+      <div class="category-row">
+        <span class="cat-icon">🚗</span>
+        <span class="cat-name">Transportation <span class="essential-badge">essential</span></span>
+        <div class="cat-input-wrap"><span class="cat-dollar">$</span><input type="text" class="cat-input" data-cat value="400"></div>
+      </div>
+      <div class="category-row">
+        <span class="cat-icon">🛒</span>
+        <span class="cat-name">Food & Groceries <span class="essential-badge">essential</span></span>
+        <div class="cat-input-wrap"><span class="cat-dollar">$</span><input type="text" class="cat-input" data-cat value="500"></div>
+      </div>
+      <div class="category-row">
+        <span class="cat-icon">🛡️</span>
+        <span class="cat-name">Insurance <span class="essential-badge">essential</span></span>
+        <div class="cat-input-wrap"><span class="cat-dollar">$</span><input type="text" class="cat-input" data-cat value="200"></div>
+      </div>
+      <div class="category-row">
+        <span class="cat-icon">⚕️</span>
+        <span class="cat-name">Healthcare <span class="essential-badge">essential</span></span>
+        <div class="cat-input-wrap"><span class="cat-dollar">$</span><input type="text" class="cat-input" data-cat value="150"></div>
+      </div>
+      <div class="category-row">
+        <span class="cat-icon">💡</span>
+        <span class="cat-name">Utilities <span class="essential-badge">essential</span></span>
+        <div class="cat-input-wrap"><span class="cat-dollar">$</span><input type="text" class="cat-input" data-cat value="200"></div>
+      </div>
+      <div class="category-row">
+        <span class="cat-icon">💳</span>
+        <span class="cat-name">Debt Payments</span>
+        <div class="cat-input-wrap"><span class="cat-dollar">$</span><input type="text" class="cat-input" data-cat value="500"></div>
+      </div>
+      <div class="category-row">
+        <span class="cat-icon">🛍️</span>
+        <span class="cat-name">Personal & Shopping</span>
+        <div class="cat-input-wrap"><span class="cat-dollar">$</span><input type="text" class="cat-input" data-cat value="150"></div>
+      </div>
+      <div class="category-row">
+        <span class="cat-icon">🎬</span>
+        <span class="cat-name">Entertainment & Dining</span>
+        <div class="cat-input-wrap"><span class="cat-dollar">$</span><input type="text" class="cat-input" data-cat value="200"></div>
+      </div>
+      <div class="category-row">
+        <span class="cat-icon">📚</span>
+        <span class="cat-name">Education</span>
+        <div class="cat-input-wrap"><span class="cat-dollar">$</span><input type="text" class="cat-input" data-cat value="0"></div>
+      </div>
+      <div class="category-row">
+        <span class="cat-icon">➕</span>
+        <span class="cat-name">Other</span>
+        <div class="cat-input-wrap"><span class="cat-dollar">$</span><input type="text" class="cat-input" data-cat value="0"></div>
+      </div>
+
+      <div class="category-total">
+        <span class="label">Monthly total</span>
+        <span class="amount" id="catTotal">$3,800</span>
+      </div>
+    </div>
+
+    <button class="btn-next" onclick="goToScreen(2)">Next: Choose your lifestyle <span class="arrow">→</span></button>
+  </div>
+
+  <!-- ==================== SCREEN 2: LIFESTYLE ==================== -->
+  <div class="screen" id="screen2">
+    <h1 class="screen-title">What does freedom look like for you?</h1>
+    <p class="screen-subtitle">This determines which expenses your Freedom Number needs to cover.</p>
+
+    <div class="lifestyle-cards">
+      <div class="lifestyle-card" data-multiplier="0.77" onclick="selectLifestyle(this)">
+        <div class="icon">🏡</div>
+        <h3>Just the basics</h3>
+        <p>Cover essential expenses only — roof, food, healthcare, bills.</p>
+        <div class="calc-amount" id="basicAmount">$2,464 / mo</div>
+      </div>
+
+      <div class="lifestyle-card selected" data-multiplier="1" onclick="selectLifestyle(this)">
+        <div class="icon">✨</div>
+        <h3>Comfortable</h3>
+        <p>Cover everything you spend today, including the fun stuff.</p>
+        <div class="calc-amount" id="comfortAmount">$3,200 / mo</div>
+      </div>
+
+      <div class="lifestyle-card" data-multiplier="1.2" onclick="selectLifestyle(this)">
+        <div class="icon">🌎</div>
+        <h3>Full freedom</h3>
+        <p>Current expenses plus 20% for travel, hobbies, and surprises.</p>
+        <div class="calc-amount" id="fullAmount">$3,840 / mo</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="goToScreen(3)" style="margin-top: 1rem;">
+      Show my Freedom Number <span class="arrow">→</span>
+    </button>
+  </div>
+
+  <!-- ==================== SCREEN 3: THE BIG REVEAL ==================== -->
+  <div class="screen" id="screen3">
+    <div class="results-container">
+      <div class="results-glow"></div>
+
+      <div class="results-pre-label">Your Freedom Number</div>
+
+      <div class="freedom-number-display" id="bigNumber">$960,000</div>
+
+      <div class="rate-badge">
+        <span class="dot"></span>
+        at 4% safe withdrawal rate
+      </div>
+
+      <div class="results-context">
+        <p>
+          That's the amount that, properly invested, generates <strong id="monthlyGenerated">$3,200/month</strong> — enough to cover your life, indefinitely. It might feel like a big number. <em>It's not as far away as you think.</em>
+        </p>
+      </div>
+
+      <div class="range-strip">
+        <div class="range-card">
+          <div class="rate-label">6% Optimistic</div>
+          <div class="range-amount" id="r6">$640,000</div>
+          <div class="range-note">Strong market returns</div>
+        </div>
+        <div class="range-card highlight">
+          <div class="rate-label">4% Safe · Recommended</div>
+          <div class="range-amount" id="r4">$960,000</div>
+          <div class="range-note">Trinity Study standard</div>
+        </div>
+        <div class="range-card">
+          <div class="rate-label">3% Conservative</div>
+          <div class="range-amount" id="r3">$1,280,000</div>
+          <div class="range-note">Extra cushion</div>
+        </div>
+      </div>
+
+      <div class="results-divider"></div>
+
+      <div class="results-cta">
+        <h3>Now — how do you <em>get there?</em></h3>
+        <p class="cta-sub">Share your income, debts, and savings. Our AI will build a step-by-step action plan showing exactly how each move speeds up your timeline.</p>
+
+        <div class="results-actions">
+          <button class="btn-primary" onclick="goToScreen(4)">
+            Get my personalized action plan <span class="arrow">→</span>
+          </button>
+          <button class="btn-secondary" onclick="goToScreen(1)">← Recalculate</button>
+          <span class="fine-print">Free account required for action plan. Takes 2 minutes.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 4: ACTION PLAN PREVIEW ==================== -->
+  <div class="screen" id="screen4">
+    <div class="plan-preview">
+
+      <div class="plan-header">
+        <h1 class="screen-title">Your path to <span style="color: var(--green);">freedom</span></h1>
+        <p class="screen-subtitle">Here's what the math says about your situation — and what to do about it.</p>
+      </div>
+
+      <!-- Gap visualization -->
+      <div class="gap-visual">
+        <div class="gap-endpoints">
+          <div class="gap-point">
+            <div class="gap-label">Where you are</div>
+            <div class="gap-amount current">-$34,000</div>
+          </div>
+          <div class="gap-arrow">→</div>
+          <div class="gap-point">
+            <div class="gap-label">Where you need to be</div>
+            <div class="gap-amount target" id="gapTarget">$960,000</div>
+          </div>
+        </div>
+        <div class="gap-bar-track">
+          <div class="gap-bar-fill" style="--fill-pct: 3%;"></div>
+        </div>
+        <div class="gap-stat-row">
+          <span class="label">Gap remaining</span>
+          <span class="value" id="gapRemaining">$994,000</span>
+        </div>
+      </div>
+
+      <!-- AI Loading State -->
+      <div class="ai-loading" id="aiLoading">
+        <div class="ai-loading-spinner"></div>
+        <h3>Building your action plan...</h3>
+        <div class="ai-steps">
+          <div class="ai-step active" id="aiStep1">
+            <div class="ai-step-dot"></div>
+            <span>Analyzing your debt structure</span>
+          </div>
+          <div class="ai-step" id="aiStep2">
+            <div class="ai-step-dot"></div>
+            <span>Optimizing contributions</span>
+          </div>
+          <div class="ai-step" id="aiStep3">
+            <div class="ai-step-dot"></div>
+            <span>Calculating timeline impacts</span>
+          </div>
+          <div class="ai-step" id="aiStep4">
+            <div class="ai-step-dot"></div>
+            <span>Prioritizing recommendations</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results (shown after loading) -->
+      <div class="plan-results" id="planResults">
+
+        <div class="plan-summary-card">
+          You're 28 with <strong>$62K in debt</strong> and <strong>$28K in assets</strong>. Your biggest quick win is maxing your employer's 401K match — you're currently leaving <strong>$600/year in free money</strong> on the table. After that, crushing your 19.9% credit card frees up $200/month that accelerates everything else.
+        </div>
+
+        <div class="rec-card" id="rec1">
+          <div class="rec-header">
+            <span class="rec-priority">Priority #1</span>
+            <span class="rec-impact">Saves 3.2 years</span>
+          </div>
+          <div class="rec-title">🎯 Max your 401K employer match</div>
+          <div class="rec-description">Your employer matches 50% up to 6% of salary. You're only contributing 3%. Bumping to 6% nets you $3,000/year in free money — that's $600/year you're currently walking away from.</div>
+          <div class="rec-actions">
+            <div class="rec-action"><div class="checkbox"></div> Log into your 401K provider portal</div>
+            <div class="rec-action"><div class="checkbox"></div> Increase contribution from 3% to 6%</div>
+            <div class="rec-action"><div class="checkbox"></div> Costs ~$106 more per paycheck</div>
+          </div>
+          <div class="rec-card-footer">
+            <span class="confidence high">● High confidence</span>
+            <div class="toggle-lever active" onclick="this.classList.toggle('active')">
+              <span>Enabled</span>
+              <div class="toggle-switch"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rec-card" id="rec2">
+          <div class="rec-header">
+            <span class="rec-priority">Priority #2</span>
+            <span class="rec-impact">Saves 2.8 years</span>
+          </div>
+          <div class="rec-title">💳 Eliminate credit card debt (avalanche)</div>
+          <div class="rec-description">Your credit card at 19.9% APR is costing you $91/month in interest alone. Throw every extra dollar here first. Once it's gone, redirect that $200 minimum payment to your student loans.</div>
+          <div class="rec-actions">
+            <div class="rec-action"><div class="checkbox"></div> Stop using the card immediately</div>
+            <div class="rec-action"><div class="checkbox"></div> Add $150/mo extra to payments</div>
+            <div class="rec-action"><div class="checkbox"></div> Payoff date: August 2027</div>
+          </div>
+          <div class="rec-card-footer">
+            <span class="confidence high">● High confidence</span>
+            <div class="toggle-lever active" onclick="this.classList.toggle('active')">
+              <span>Enabled</span>
+              <div class="toggle-switch"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rec-card" id="rec3">
+          <div class="rec-header">
+            <span class="rec-priority">Priority #3</span>
+            <span class="rec-impact">Saves 8.5 years</span>
+          </div>
+          <div class="rec-title">📈 Grow income by 10-15%</div>
+          <div class="rec-description">With your MBA, a $8,500-$12,750 raise is realistic within the next 12 months — through negotiation, internal promotion, or a strategic move. Every $500/month in new income shaves years off your timeline.</div>
+          <div class="rec-actions">
+            <div class="rec-action"><div class="checkbox"></div> Research market rate for your role + MBA</div>
+            <div class="rec-action"><div class="checkbox"></div> Build your case with recent wins</div>
+            <div class="rec-action"><div class="checkbox"></div> Schedule the conversation within 30 days</div>
+          </div>
+          <div class="rec-card-footer">
+            <span class="confidence medium">● Medium confidence</span>
+            <div class="toggle-lever active" onclick="this.classList.toggle('active')">
+              <span>Enabled</span>
+              <div class="toggle-switch"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline panel -->
+        <div class="timeline-panel" id="timelinePanel">
+          <div class="timeline-label">Your Freedom Timeline</div>
+          <div class="timeline-before">52 years at current pace</div>
+          <div class="timeline-after">18.4 years</div>
+          <div class="timeline-saved">That's <strong>33.6 years saved</strong> by pulling the right levers.</div>
+        </div>
+
+        <!-- Final CTA -->
+        <div class="plan-final-cta" id="planCta">
+          <h3>This is a preview.</h3>
+          <p>Create a free account to save your plan, track progress monthly, and get AI-refreshed recommendations as your situation changes.</p>
+          <button class="btn-primary">
+            Create free account <span class="arrow">→</span>
+          </button>
+          <p class="fine-print" style="margin-top: 0.75rem;">No credit card needed. Your data stays private.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ========== SCRIPTS ========== -->
+<script>
+let currentScreen = 1;
+let monthlyExpenses = 3200;
+let selectedMultiplier = 1;
+let mode = 'simple';
+
+// ---- Utilities ----
+function parseNum(str) {
+  return parseInt(String(str).replace(/[^0-9]/g, '')) || 0;
+}
+
+function fmt(n) {
+  return '$' + Math.round(n).toLocaleString('en-US');
+}
+
+// ---- Mode toggle ----
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  if (m === 'simple') {
+    document.getElementById('simpleMode').style.display = 'block';
+    document.getElementById('detailedMode').classList.remove('visible');
+  } else {
+    document.getElementById('simpleMode').style.display = 'none';
+    document.getElementById('detailedMode').classList.add('visible');
+    updateCategoryTotal();
+  }
+}
+
+// ---- Category total ----
+function updateCategoryTotal() {
+  let total = 0;
+  document.querySelectorAll('.cat-input').forEach(inp => {
+    total += parseNum(inp.value);
+  });
+  document.getElementById('catTotal').textContent = fmt(total);
+  monthlyExpenses = total;
+}
+
+document.querySelectorAll('.cat-input').forEach(inp => {
+  inp.addEventListener('input', function() {
+    const raw = this.value.replace(/[^0-9]/g, '');
+    if (raw) this.value = parseInt(raw).toLocaleString('en-US');
+    updateCategoryTotal();
+  });
+});
+
+// ---- Simple input ----
+document.getElementById('simpleExpense').addEventListener('input', function() {
+  const raw = this.value.replace(/[^0-9]/g, '');
+  if (raw) this.value = parseInt(raw).toLocaleString('en-US');
+  monthlyExpenses = parseNum(this.value);
+});
+
+document.getElementById('simpleExpense').addEventListener('focus', function() {
+  this.select();
+});
+
+// ---- Lifestyle selection ----
+function selectLifestyle(card) {
+  document.querySelectorAll('.lifestyle-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  selectedMultiplier = parseFloat(card.dataset.multiplier);
+}
+
+function updateLifestyleAmounts() {
+  const base = mode === 'simple' ? parseNum(document.getElementById('simpleExpense').value) : monthlyExpenses;
+  document.getElementById('basicAmount').textContent = fmt(base * 0.77) + ' / mo';
+  document.getElementById('comfortAmount').textContent = fmt(base) + ' / mo';
+  document.getElementById('fullAmount').textContent = fmt(base * 1.2) + ' / mo';
+}
+
+// ---- Screen navigation ----
+function goToScreen(num) {
+  // Before leaving screen 1, capture expenses
+  if (currentScreen === 1) {
+    if (mode === 'simple') {
+      monthlyExpenses = parseNum(document.getElementById('simpleExpense').value);
+    }
+    updateLifestyleAmounts();
+  }
+
+  // Before leaving screen 2, calculate and prepare results
+  if (currentScreen === 2 && num === 3) {
+    const adjusted = monthlyExpenses * selectedMultiplier;
+    const annual = adjusted * 12;
+
+    // Prepare numbers before showing
+    const fn4 = Math.round(annual / 0.04);
+    const fn3 = Math.round(annual / 0.03);
+    const fn6 = Math.round(annual / 0.06);
+
+    document.getElementById('bigNumber').textContent = fmt(fn4);
+    document.getElementById('r4').textContent = fmt(fn4);
+    document.getElementById('r3').textContent = fmt(fn3);
+    document.getElementById('r6').textContent = fmt(fn6);
+    document.getElementById('monthlyGenerated').textContent = fmt(adjusted) + '/month';
+    document.getElementById('gapTarget').textContent = fmt(fn4);
+    document.getElementById('gapRemaining').textContent = fmt(fn4 + 34000);
+  }
+
+  // Hide current screen
+  document.getElementById('screen' + currentScreen).classList.remove('active');
+
+  // Update progress
+  currentScreen = num;
+  updateProgress(num);
+
+  // Show new screen (slight delay for animation)
+  setTimeout(() => {
+    const newScreen = document.getElementById('screen' + num);
+    newScreen.classList.remove('active');
+    void newScreen.offsetWidth; // force reflow
+    newScreen.classList.add('active');
+
+    // If screen 3, re-trigger animations by re-adding the element
+    if (num === 3) {
+      retriggerResultAnimations();
+    }
+
+    // If screen 4, run the AI loading sequence
+    if (num === 4) {
+      runAILoadingSequence();
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 50);
+}
+
+function updateProgress(step) {
+  const labels = ['', 'Step 1 of 3', 'Step 2 of 3', 'Your number', 'Your plan'];
+  document.getElementById('progLabel').textContent = labels[step] || '';
+
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('prog' + i);
+    el.classList.remove('complete', 'current');
+    if (i < step) el.classList.add('complete');
+    if (i === step) el.classList.add('current');
+  }
+
+  // Hide progress bar on results screen for cleaner look
+  document.getElementById('progressBar').style.opacity = (step >= 3) ? '0' : '1';
+}
+
+// ---- Re-trigger result animations ----
+function retriggerResultAnimations() {
+  const container = document.querySelector('#screen3 .results-container');
+  const clone = container.cloneNode(true);
+  container.parentNode.replaceChild(clone, container);
+}
+
+// ---- AI Loading Sequence ----
+function runAILoadingSequence() {
+  const steps = [
+    { id: 'aiStep1', delay: 0 },
+    { id: 'aiStep2', delay: 1200 },
+    { id: 'aiStep3', delay: 2400 },
+    { id: 'aiStep4', delay: 3600 },
+  ];
+
+  // Reset
+  document.getElementById('aiLoading').style.display = 'block';
+  document.getElementById('planResults').classList.remove('visible');
+  steps.forEach(s => {
+    const el = document.getElementById(s.id);
+    el.classList.remove('active', 'done');
+  });
+  document.getElementById('aiStep1').classList.add('active');
+
+  steps.forEach((step, i) => {
+    setTimeout(() => {
+      const el = document.getElementById(step.id);
+      el.classList.remove('active');
+      el.classList.add('done');
+
+      // Activate next
+      if (i + 1 < steps.length) {
+        document.getElementById(steps[i + 1].id).classList.add('active');
+      }
+    }, step.delay + 1000);
+  });
+
+  // Show results
+  setTimeout(() => {
+    document.getElementById('aiLoading').style.display = 'none';
+    document.getElementById('planResults').classList.add('visible');
+
+    // Stagger recommendation cards
+    const cards = document.querySelectorAll('.rec-card');
+    cards.forEach((card, i) => {
+      setTimeout(() => card.classList.add('visible'), i * 200);
+    });
+
+    // Show timeline panel
+    setTimeout(() => {
+      document.getElementById('timelinePanel').classList.add('visible');
+    }, cards.length * 200 + 300);
+
+    // Show final CTA
+    setTimeout(() => {
+      document.getElementById('planCta').classList.add('visible');
+    }, cards.length * 200 + 700);
+
+  }, 5000);
+}
+</script>
+
+</body>
+</html>

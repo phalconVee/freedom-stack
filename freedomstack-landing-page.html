@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreedomStack — Know Your Number. Build Your Plan.</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0a0a0a;
+  --white: #fafaf9;
+  --cream: #f5f0e8;
+  --green: #22c55e;
+  --green-dim: #166534;
+  --green-glow: rgba(34, 197, 94, 0.12);
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --gray-400: #a1a1aa;
+  --gray-600: #52525b;
+  --gray-800: #27272a;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--green);
+  color: var(--black);
+}
+
+/* ========== NAV ========== */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.logo {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--green);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: var(--black);
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-links a {
+  color: var(--gray-400);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--white); }
+
+.nav-cta {
+  background: var(--white) !important;
+  color: var(--black) !important;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(255,255,255,0.15);
+}
+
+/* ========== HERO ========== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 8rem 2rem 6rem;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, var(--green-glow) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  margin-bottom: 2.5rem;
+  animation: fadeInUp 0.8s ease both;
+}
+
+.hero-badge .dot {
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  max-width: 800px;
+  animation: fadeInUp 0.8s ease 0.1s both;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--green);
+}
+
+.hero-sub {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: var(--gray-400);
+  max-width: 540px;
+  margin: 1.75rem auto 0;
+  line-height: 1.65;
+  animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+.hero-cta-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  animation: fadeInUp 0.8s ease 0.35s both;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--green);
+  color: var(--black);
+  padding: 1rem 2.25rem;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(34, 197, 94, 0.3);
+}
+
+.btn-primary .arrow {
+  transition: transform 0.2s;
+}
+
+.btn-primary:hover .arrow {
+  transform: translateX(3px);
+}
+
+.hero-fine {
+  font-size: 0.82rem;
+  color: var(--gray-600);
+}
+
+/* ========== TICKER / SOCIAL PROOF ========== */
+.ticker-section {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding: 1.25rem 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-track {
+  display: flex;
+  gap: 3rem;
+  animation: scroll 30s linear infinite;
+  width: max-content;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+  color: var(--gray-600);
+  font-size: 0.85rem;
+  font-family: var(--mono);
+}
+
+.ticker-item .num {
+  color: var(--green);
+  font-weight: 500;
+}
+
+/* ========== THE PROBLEM ========== */
+.problem {
+  padding: 8rem 2rem;
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--green);
+  margin-bottom: 2rem;
+}
+
+.problem h2 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 2rem;
+}
+
+.problem-text {
+  font-size: 1.1rem;
+  color: var(--gray-400);
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+}
+
+.problem-text strong {
+  color: var(--white);
+}
+
+.strikethrough {
+  text-decoration: line-through;
+  color: var(--gray-600);
+}
+
+/* ========== HOW IT WORKS ========== */
+.how-it-works {
+  padding: 6rem 2rem 8rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.how-it-works h2 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  text-align: center;
+  margin-bottom: 4rem;
+  letter-spacing: -0.02em;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.step-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.step-card:hover {
+  border-color: rgba(34, 197, 94, 0.2);
+  background: rgba(34, 197, 94, 0.03);
+  transform: translateY(-4px);
+}
+
+.step-number {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--green);
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.1em;
+}
+
+.step-card h3 {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.step-card p {
+  color: var(--gray-400);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.step-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  padding: 0.3rem 0.75rem;
+  background: rgba(255,255,255,0.04);
+  border-radius: 100px;
+}
+
+/* ========== THE MATH (interactive demo) ========== */
+.math-section {
+  padding: 6rem 2rem 8rem;
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.math-section h2 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.math-section .subtitle {
+  color: var(--gray-400);
+  font-size: 1.05rem;
+  margin-bottom: 3rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.demo-calculator {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 3rem;
+  text-align: left;
+}
+
+.demo-input-group {
+  margin-bottom: 2rem;
+}
+
+.demo-label {
+  font-size: 0.85rem;
+  color: var(--gray-400);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.demo-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.demo-dollar {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  color: var(--gray-600);
+}
+
+.demo-input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid rgba(255,255,255,0.15);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 2.5rem;
+  font-weight: 500;
+  width: 200px;
+  padding: 0.25rem 0;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.demo-input:focus {
+  border-color: var(--green);
+}
+
+.demo-per-month {
+  font-size: 0.95rem;
+  color: var(--gray-600);
+}
+
+.demo-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 2rem 0;
+}
+
+.demo-result {
+  text-align: center;
+}
+
+.demo-result-label {
+  font-size: 0.85rem;
+  color: var(--gray-400);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--mono);
+}
+
+.demo-result-number {
+  font-family: var(--mono);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 500;
+  color: var(--green);
+  transition: all 0.3s;
+  letter-spacing: -0.02em;
+}
+
+.demo-result-context {
+  color: var(--gray-400);
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
+
+.demo-result-context strong {
+  color: var(--white);
+}
+
+.demo-range {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.demo-range-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.demo-range-card:hover,
+.demo-range-card.active {
+  border-color: var(--green);
+  background: var(--green-glow);
+}
+
+.demo-range-card .rate {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  margin-bottom: 0.25rem;
+}
+
+.demo-range-card .amount {
+  font-family: var(--mono);
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.demo-range-card .label {
+  font-size: 0.7rem;
+  color: var(--gray-600);
+  margin-top: 0.25rem;
+}
+
+/* ========== WHAT YOU GET ========== */
+.features {
+  padding: 6rem 2rem 8rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.features h2 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  text-align: center;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.features .subtitle {
+  text-align: center;
+  color: var(--gray-400);
+  font-size: 1.05rem;
+  margin-bottom: 4rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.feature-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 2.25rem;
+  transition: all 0.3s;
+}
+
+.feature-card:hover {
+  border-color: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.feature-card p {
+  color: var(--gray-400);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.feature-card .tag {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--green);
+  background: var(--green-glow);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+/* ========== NOT ANOTHER ========== */
+.not-another {
+  padding: 6rem 2rem 4rem;
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.not-another h2 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.02em;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.comparison-table th {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gray-600);
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.comparison-table th:last-child {
+  color: var(--green);
+}
+
+.comparison-table td {
+  padding: 0.85rem 1.25rem;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--gray-400);
+}
+
+.comparison-table td:last-child {
+  color: var(--white);
+}
+
+.check { color: var(--green); font-weight: bold; }
+.x-mark { color: var(--gray-600); }
+
+/* ========== FINAL CTA ========== */
+.final-cta {
+  padding: 8rem 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.final-cta::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(circle, var(--green-glow) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.final-cta h2 {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  max-width: 650px;
+  margin: 0 auto 1.5rem;
+}
+
+.final-cta h2 em {
+  font-style: italic;
+  color: var(--green);
+}
+
+.final-cta .subtitle {
+  color: var(--gray-400);
+  font-size: 1.1rem;
+  margin-bottom: 2.5rem;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ========== FOOTER ========== */
+footer {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: 3rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer .left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+footer .brand {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+footer .disclaimer {
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  max-width: 450px;
+  line-height: 1.5;
+}
+
+footer .links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+footer .links a {
+  color: var(--gray-600);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: color 0.2s;
+}
+
+footer .links a:hover { color: var(--gray-400); }
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  nav { padding: 1rem; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .hero { padding: 7rem 1.5rem 4rem; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .demo-range { grid-template-columns: 1fr; }
+  .demo-calculator { padding: 1.5rem; }
+  .demo-input { font-size: 2rem; width: 150px; }
+  footer { flex-direction: column; gap: 2rem; text-align: center; }
+  footer .links { justify-content: center; }
+  .comparison-table { font-size: 0.8rem; }
+  .comparison-table th, .comparison-table td { padding: 0.65rem 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">F</div>
+    FreedomStack
+  </div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#calculator">Try it</a>
+    <a href="/login">Log in</a>
+    <a href="/calculator" class="nav-cta">Get your number →</a>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Free · No account required · 60 seconds
+  </div>
+
+  <h1>Know your number.<br>Build your <em>plan.</em></h1>
+
+  <p class="hero-sub">
+    Most people know what they spend each month.<br>
+    Almost nobody knows how much they'd need invested to cover it forever.<br>
+    That number changes everything.
+  </p>
+
+  <div class="hero-cta-group">
+    <a href="#calculator" class="btn-primary">
+      Calculate my Freedom Number <span class="arrow">→</span>
+    </a>
+    <span class="hero-fine">Takes 60 seconds. No signup. No credit card. Just math.</span>
+  </div>
+</section>
+
+<!-- ========== TICKER ========== -->
+<div class="ticker-section">
+  <div class="ticker-track">
+    <span class="ticker-item">avg monthly expenses <span class="num">$3,400</span></span>
+    <span class="ticker-item">freedom number at 4% <span class="num">$1,020,000</span></span>
+    <span class="ticker-item">avg student debt <span class="num">$37,338</span></span>
+    <span class="ticker-item">median savings (25-34) <span class="num">$10,500</span></span>
+    <span class="ticker-item">time saved with a plan <span class="num">12+ years</span></span>
+    <span class="ticker-item">employer match left on table <span class="num">$1,336/yr</span></span>
+    <span class="ticker-item">avg monthly expenses <span class="num">$3,400</span></span>
+    <span class="ticker-item">freedom number at 4% <span class="num">$1,020,000</span></span>
+    <span class="ticker-item">avg student debt <span class="num">$37,338</span></span>
+    <span class="ticker-item">median savings (25-34) <span class="num">$10,500</span></span>
+    <span class="ticker-item">time saved with a plan <span class="num">12+ years</span></span>
+    <span class="ticker-item">employer match left on table <span class="num">$1,336/yr</span></span>
+  </div>
+</div>
+
+<!-- ========== THE PROBLEM ========== -->
+<section class="problem reveal">
+  <div class="section-label">// the problem</div>
+
+  <h2>You know what you spend.<br>You don't know what it <em>costs</em> you.</h2>
+
+  <p class="problem-text">
+    You spend $3,200 a month. Rent, groceries, loans, subscriptions, the occasional dinner out. You know the number. It shows up on your bank statement every 30 days.
+  </p>
+
+  <p class="problem-text">
+    But here's the question nobody asks: <strong>how much money would you need — sitting in investments, compounding, working for you — to cover that $3,200 forever?</strong>
+  </p>
+
+  <p class="problem-text">
+    That's your Freedom Number. And once you know it, every financial decision starts to make sense. Pay off the credit card or invest? Max the 401K or save for a house? Take the raise or negotiate harder?
+  </p>
+
+  <p class="problem-text">
+    The answer isn't "<span class="strikethrough">it depends</span>." It's math. And we do the math for you.
+  </p>
+</section>
+
+<!-- ========== HOW IT WORKS ========== -->
+<section class="how-it-works reveal" id="how">
+  <h2>Three steps. One plan.</h2>
+
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-number">01</div>
+      <h3>Tell us what life costs</h3>
+      <p>Enter your monthly expenses — as a lump sum or category by category. Rent, food, loans, Netflix, all of it. No judgment, just numbers.</p>
+      <div class="step-time">⏱ 60 seconds</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">02</div>
+      <h3>See your Freedom Number</h3>
+      <p>We calculate the exact principal you'd need invested to cover your expenses passively — at conservative, moderate, and optimistic return rates. This is your finish line.</p>
+      <div class="step-time">⚡ instant</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">03</div>
+      <h3>Get your action plan</h3>
+      <p>Share your income, debts, and savings — and our AI builds a personalized strategy. Every recommendation shows exactly how many years it shaves off your timeline.</p>
+      <div class="step-time">🤖 AI-powered</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== LIVE CALCULATOR ========== -->
+<section class="math-section reveal" id="calculator">
+  <div class="section-label">// try it right now</div>
+  <h2>See your number in real time</h2>
+  <p class="subtitle">Type your monthly expenses below. Watch the math happen.</p>
+
+  <div class="demo-calculator">
+    <div class="demo-input-group">
+      <label class="demo-label">My monthly expenses are roughly...</label>
+      <div class="demo-input-row">
+        <span class="demo-dollar">$</span>
+        <input type="text" class="demo-input" id="expenseInput" value="3,200" inputmode="numeric">
+        <span class="demo-per-month">/ month</span>
+      </div>
+    </div>
+
+    <div class="demo-divider"></div>
+
+    <div class="demo-result">
+      <div class="demo-result-label">Your Freedom Number</div>
+      <div class="demo-result-number" id="freedomNumber">$960,000</div>
+      <p class="demo-result-context">
+        at a <strong>4% safe withdrawal rate</strong> — the gold standard from 30 years of financial research. This is the amount that, properly invested, covers your life without running out.
+      </p>
+
+      <div class="demo-range">
+        <div class="demo-range-card" data-rate="0.06">
+          <div class="rate">6% optimistic</div>
+          <div class="amount" id="range6">$640,000</div>
+          <div class="label">strong returns</div>
+        </div>
+        <div class="demo-range-card active" data-rate="0.04">
+          <div class="rate">4% safe</div>
+          <div class="amount" id="range4">$960,000</div>
+          <div class="label">recommended</div>
+        </div>
+        <div class="demo-range-card" data-rate="0.03">
+          <div class="rate">3% conservative</div>
+          <div class="amount" id="range3">$1,280,000</div>
+          <div class="label">extra cautious</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 2.5rem;">
+    <a href="/calculator" class="btn-primary">
+      Get my full action plan <span class="arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section class="features reveal">
+  <h2>More than a calculator</h2>
+  <p class="subtitle">Know your number, then build the bridge to get there.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>AI-powered action plan</h3>
+      <p>Not generic advice. A prioritized strategy built from your actual numbers — debts, income, investments, all of it. Each recommendation shows exactly how it moves your timeline.</p>
+      <span class="tag">Personalized to you</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Interactive lever toggling</h3>
+      <p>Toggle recommendations on and off. Watch your freedom timeline shift in real-time. See the difference between paying off debt first vs. maxing your 401K — instantly.</p>
+      <span class="tag">Real-time</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Debt payoff optimizer</h3>
+      <p>See avalanche vs. snowball strategies side by side with your actual debts. Know exactly when you'll be debt-free and how much interest you'll save with each approach.</p>
+      <span class="tag">Avalanche & snowball</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📈</div>
+      <h3>Progress tracking</h3>
+      <p>Monthly check-ins that take 60 seconds. Track net worth, debt reduction, and freedom percentage over time. The dashboard that motivates you to keep going.</p>
+      <span class="tag">60-second updates</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3>401K & retirement optimization</h3>
+      <p>Are you leaving free money on the table with your employer match? We'll tell you exactly how much — and show the optimal contribution order across all your accounts.</p>
+      <span class="tag">Don't miss free money</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>Your data stays yours</h3>
+      <p>No account linking required. No selling your data. No ads. Ever. We strip all personally identifiable information before any AI processing. You're the customer, not the product.</p>
+      <span class="tag">Privacy-first</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== COMPARISON ========== -->
+<section class="not-another reveal">
+  <h2>Not another budgeting app</h2>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Budgeting Apps</th>
+        <th>FIRE Calculators</th>
+        <th>FreedomStack</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Shows your Freedom Number</td>
+        <td class="x-mark">✗</td>
+        <td class="check">✓</td>
+        <td class="check">✓</td>
+      </tr>
+      <tr>
+        <td>Personalized AI action plan</td>
+        <td class="x-mark">✗</td>
+        <td class="x-mark">✗</td>
+        <td class="check">✓</td>
+      </tr>
+      <tr>
+        <td>Debt payoff optimization</td>
+        <td class="x-mark">✗</td>
+        <td>Some</td>
+        <td class="check">✓</td>
+      </tr>
+      <tr>
+        <td>Each action's timeline impact</td>
+        <td class="x-mark">✗</td>
+        <td class="x-mark">✗</td>
+        <td class="check">✓</td>
+      </tr>
+      <tr>
+        <td>No account linking needed</td>
+        <td class="x-mark">✗</td>
+        <td class="check">✓</td>
+        <td class="check">✓</td>
+      </tr>
+      <tr>
+        <td>Works in 60 seconds</td>
+        <td class="x-mark">✗</td>
+        <td class="check">✓</td>
+        <td class="check">✓</td>
+      </tr>
+      <tr>
+        <td>Tracks progress over time</td>
+        <td class="check">✓</td>
+        <td class="x-mark">✗</td>
+        <td class="check">✓</td>
+      </tr>
+      <tr>
+        <td>No ads, no data selling</td>
+        <td>Some</td>
+        <td class="check">✓</td>
+        <td class="check">✓</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ========== FINAL CTA ========== -->
+<section class="final-cta reveal">
+  <h2>Your freedom has<br>a <em>number.</em></h2>
+
+  <p class="subtitle">
+    It takes 60 seconds to find out what it is.<br>
+    No signup. No credit card. Just the math that changes how you think about money.
+  </p>
+
+  <a href="/calculator" class="btn-primary" style="font-size: 1.15rem; padding: 1.15rem 2.5rem;">
+    Calculate my Freedom Number <span class="arrow">→</span>
+  </a>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="left">
+    <div class="brand">FreedomStack</div>
+    <p class="disclaimer">
+      FreedomStack provides financial information for educational purposes only. This is not financial, investment, or tax advice. Consult a qualified professional before making financial decisions.
+    </p>
+  </div>
+  <div class="links">
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+  </div>
+</footer>
+
+<!-- ========== SCRIPTS ========== -->
+<script>
+// Live calculator
+const input = document.getElementById('expenseInput');
+const freedomNum = document.getElementById('freedomNumber');
+const range3 = document.getElementById('range3');
+const range4 = document.getElementById('range4');
+const range6 = document.getElementById('range6');
+
+function parseAmount(str) {
+  return parseInt(str.replace(/[^0-9]/g, '')) || 0;
+}
+
+function formatCurrency(num) {
+  return '$' + num.toLocaleString('en-US');
+}
+
+function updateCalculations() {
+  const monthly = parseAmount(input.value);
+  const annual = monthly * 12;
+
+  freedomNum.textContent = formatCurrency(Math.round(annual / 0.04));
+  range3.textContent = formatCurrency(Math.round(annual / 0.03));
+  range4.textContent = formatCurrency(Math.round(annual / 0.04));
+  range6.textContent = formatCurrency(Math.round(annual / 0.06));
+}
+
+input.addEventListener('input', function() {
+  // Preserve cursor position through formatting
+  const raw = this.value.replace(/[^0-9]/g, '');
+  if (raw) {
+    this.value = parseInt(raw).toLocaleString('en-US');
+  }
+  updateCalculations();
+});
+
+input.addEventListener('focus', function() {
+  this.select();
+});
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+
+reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

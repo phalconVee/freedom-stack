@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "skills": {
+    "database": {
+      "source": "railwayapp/railway-skills",
+      "sourceType": "github",
+      "computedHash": "85759876da4bc29e150835761d5af0609cdb0ca0bbae0a7f54abe2b20b5fcb42"
+    },
+    "laravel:using-laravel-superpowers": {
+      "source": "jpcaparas/superpowers-laravel",
+      "sourceType": "github",
+      "computedHash": "5b8641d5850bcc7f636f7f52377ab031f400e2e2e54c9b6e35d3019a2d55e2bb"
+    },
+    "stripe-integration": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "f2e459132f83ed98e30a6ff74757b08be2772056c7c6b91f3afb95823b224dc6"
+    },
+    "vue-best-practices": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "3df585ad31aec78fe55c56c1411262737e6b231677a3153dec512a882fde80cd"
+    },
+    "vue-pinia-best-practices": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "d4ba913bec21910b8e37b2115cd964df2dc43ad62346b981c7b88d4ddc8cf792"
+    },
+    "vue-router-best-practices": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "f0745ed318c113e592ab4a9ded57ceadd0db2edab00cdb46b216c83f5ce0799e"
+    },
+    "vue-testing-best-practices": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "58d365899f54be9e5fa2c2e455093f9567620600578ae92aaa2f31d9b19a59ad"
+    }
+  }
+}

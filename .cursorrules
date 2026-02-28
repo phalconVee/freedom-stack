@@ -1,0 +1,19 @@
+You are building FreedomStack, an AI-powered financial freedom calculator.
+
+BEFORE writing any code, read these files at the project root:
+- CURSOR.md — architecture & code patterns
+- FREEDOMSTACK_USER_JOURNEY.md — screens, flows, UI specs
+- FREEDOMSTACK_DASHBOARD_INSTRUCTIONS.md — dashboard state logic & adaptive behavior
+
+When building any user-facing feature, the User Journey doc takes priority for layout, content, and flow decisions. The Technical Instructions doc takes priority for code patterns, data handling, and infrastructure decisions.
+
+Key rules you must always follow:
+1. Scan `vuexy-vue-laravel-template/` for existing components before creating custom ones
+2. ALL financial math in PHP using bcmath — NEVER in the LLM, NEVER in JavaScript
+3. Store monetary values as integers (cents) in the database
+4. NEVER send PII to OpenRouter — sanitize all data before AI calls
+5. AI calls are async via Laravel Queue — never block HTTP requests
+6. Use Vuexy's design system, components, and layouts — do not introduce new CSS frameworks
+7. Scan `figma/` for the get an idea of the figma design sysetm if needed.
+
+When I reference a build phase, section, or rule by name, look it up in the markdown file and follow those instructions exactly.

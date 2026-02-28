@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreedomStack — Create Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0a0a0a;
+  --black-card: #111111;
+  --white: #fafaf9;
+  --green: #22c55e;
+  --green-dim: #166534;
+  --green-glow: rgba(34, 197, 94, 0.12);
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --gray-300: #d4d4d8;
+  --gray-400: #a1a1aa;
+  --gray-500: #71717a;
+  --gray-600: #52525b;
+  --gray-800: #27272a;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--sans);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--green);
+  color: var(--black);
+}
+
+/* ========== DEMO TOGGLE ========== */
+.demo-toggle {
+  position: fixed;
+  top: 1.25rem;
+  right: 2rem;
+  z-index: 200;
+  display: flex;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.demo-toggle button {
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+  font-family: var(--sans);
+  border: none;
+  background: transparent;
+  color: var(--gray-500);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.25s;
+}
+
+.demo-toggle button.active {
+  background: rgba(255,255,255,0.1);
+  color: var(--white);
+}
+
+/* ========== SPLIT LAYOUT ========== */
+.auth-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* ========== LEFT PANEL ========== */
+.auth-left {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem;
+  overflow: hidden;
+}
+
+.auth-left::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  width: 140%;
+  height: 140%;
+  background: 
+    radial-gradient(ellipse at 30% 20%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(34, 197, 94, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.auth-left::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+.auth-left-content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 480px;
+}
+
+.auth-logo {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: var(--white);
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--green);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: var(--black);
+  font-weight: 700;
+}
+
+.auth-left-headline {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.6s ease both;
+}
+
+.auth-left-headline em {
+  font-style: italic;
+  color: var(--green);
+}
+
+.auth-left-body {
+  color: var(--gray-400);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+/* Feature pills */
+.feature-pills {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: fadeInUp 0.6s ease 0.2s both;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.15rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  transition: all 0.25s;
+}
+
+.pill:hover {
+  border-color: rgba(34, 197, 94, 0.2);
+  background: rgba(34, 197, 94, 0.04);
+}
+
+.pill-icon {
+  font-size: 1.15rem;
+  width: 24px;
+  text-align: center;
+}
+
+.pill-text {
+  font-size: 0.9rem;
+  color: var(--gray-300);
+}
+
+.pill-text strong {
+  color: var(--white);
+}
+
+/* Saved number callout */
+.saved-number-callout {
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.6s ease both;
+}
+
+.saved-number-callout .callout-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gray-400);
+  margin-bottom: 0.35rem;
+}
+
+.saved-number-callout .callout-number {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: -0.02em;
+}
+
+.saved-number-callout .callout-note {
+  font-size: 0.82rem;
+  color: var(--gray-500);
+  margin-top: 0.35rem;
+}
+
+/* Login left - stat grid */
+.login-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  animation: fadeInUp 0.6s ease 0.15s both;
+}
+
+.login-stat {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.login-stat .stat-num {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--green);
+  margin-bottom: 0.15rem;
+}
+
+.login-stat .stat-label {
+  font-size: 0.8rem;
+  color: var(--gray-500);
+}
+
+.auth-left-footer {
+  position: relative;
+  z-index: 2;
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  line-height: 1.5;
+}
+
+/* ========== RIGHT PANEL (Form) ========== */
+.auth-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  background: var(--black-card);
+  border-left: 1px solid rgba(255,255,255,0.05);
+}
+
+.auth-form-container {
+  width: 100%;
+  max-width: 400px;
+  animation: fadeInUp 0.6s ease 0.15s both;
+}
+
+/* Mobile logo - hidden on desktop, shown on mobile above form */
+.mobile-logo {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: var(--white);
+  margin-bottom: 1.75rem;
+}
+
+.form-header {
+  margin-bottom: 2rem;
+}
+
+.form-header h2 {
+  font-family: var(--serif);
+  font-size: 1.75rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.form-header p {
+  font-size: 0.9rem;
+  color: var(--gray-500);
+}
+
+.form-header p a {
+  color: var(--green);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.form-header p a:hover {
+  opacity: 0.8;
+}
+
+/* Mobile freedom number callout - compact version for above form */
+.mobile-callout {
+  display: none;
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mobile-callout .mc-label {
+  font-size: 0.72rem;
+  color: var(--gray-400);
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.mobile-callout .mc-number {
+  font-family: var(--mono);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--green);
+}
+
+.mobile-callout .mc-note {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+}
+
+/* Name row */
+.name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* Form fields */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--gray-400);
+  margin-bottom: 0.4rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  outline: none;
+  transition: all 0.25s;
+}
+
+.form-input::placeholder {
+  color: var(--gray-600);
+}
+
+.form-input:focus {
+  border-color: var(--green);
+  background: rgba(34, 197, 94, 0.04);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.08);
+}
+
+/* Password */
+.password-wrap {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--gray-500);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-family: var(--sans);
+  transition: color 0.2s;
+}
+
+.password-toggle:hover {
+  color: var(--gray-300);
+}
+
+.password-strength {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+.strength-bar {
+  height: 3px;
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border-radius: 100px;
+  transition: background 0.3s;
+}
+
+.strength-bar.active.weak { background: var(--red); }
+.strength-bar.active.medium { background: var(--amber); }
+.strength-bar.active.strong { background: var(--green); }
+
+.strength-label {
+  font-size: 0.72rem;
+  font-family: var(--mono);
+  margin-top: 0.25rem;
+  min-height: 1em;
+  transition: color 0.3s;
+}
+
+.strength-label.weak { color: var(--red); }
+.strength-label.medium { color: var(--amber); }
+.strength-label.strong { color: var(--green); }
+
+/* Checkbox */
+.form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 1.75rem;
+}
+
+.checkbox-input {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-top: 2px;
+  position: relative;
+}
+
+.checkbox-input:checked {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.checkbox-input:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  color: var(--black);
+  font-weight: 700;
+}
+
+.checkbox-label {
+  font-size: 0.82rem;
+  color: var(--gray-400);
+  line-height: 1.5;
+}
+
+.checkbox-label a {
+  color: var(--gray-300);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Submit */
+.btn-submit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--green);
+  color: var(--black);
+  padding: 0.85rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--sans);
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.btn-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(34, 197, 94, 0.3);
+}
+
+.btn-submit .arrow {
+  transition: transform 0.2s;
+}
+
+.btn-submit:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* Login extras */
+.form-extras {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.75rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--gray-400);
+  cursor: pointer;
+}
+
+.remember-me input {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.remember-me input:checked {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.remember-me input:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.6rem;
+  color: var(--black);
+  font-weight: 700;
+}
+
+.forgot-link {
+  font-size: 0.82rem;
+  color: var(--gray-500);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.forgot-link:hover {
+  color: var(--green);
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: 1.75rem;
+  font-size: 0.82rem;
+  color: var(--gray-600);
+}
+
+.form-footer a {
+  color: var(--green);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== PAGE VIEWS ========== */
+.page-view {
+  display: none;
+}
+
+.page-view.active {
+  display: grid;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 900px) {
+  .auth-layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  /* CRITICAL: On mobile, form panel comes FIRST via order */
+  .auth-right {
+    order: 1;
+    border-left: none;
+    padding: 5rem 1.5rem 2rem;  /* top padding for breathing room */
+  }
+
+  .auth-left {
+    order: 2;
+    min-height: auto;
+    padding: 2rem 1.5rem 2.5rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .auth-left-content {
+    max-width: 100%;
+  }
+
+  /* Show mobile-only elements */
+  .mobile-logo {
+    display: flex;
+  }
+
+  .mobile-callout {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  /* Hide desktop-only elements on left panel */
+  .auth-logo {
+    display: none;
+  }
+
+  .saved-number-callout {
+    display: none; /* replaced by mobile-callout in form panel */
+  }
+
+  /* Compact the left panel content for mobile */
+  .auth-left-headline {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .auth-left-body {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .feature-pills {
+    gap: 0.5rem;
+  }
+
+  .pill {
+    padding: 0.65rem 0.85rem;
+  }
+
+  .pill-text {
+    font-size: 0.82rem;
+  }
+
+  .login-stat-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .login-stat {
+    padding: 1rem;
+  }
+
+  .login-stat .stat-num {
+    font-size: 1.25rem;
+  }
+
+  .demo-toggle {
+    top: auto;
+    bottom: 1.25rem;
+    right: 50%;
+    transform: translateX(50%);
+  }
+}
+
+@media (max-width: 480px) {
+  .name-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .auth-right {
+    padding: 4.5rem 1.25rem 2rem;
+  }
+
+  .form-header h2 {
+    font-size: 1.5rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Demo toggle -->
+<div class="demo-toggle">
+  <button class="active" onclick="showPage('register')">Create Account</button>
+  <button onclick="showPage('login')">Login</button>
+</div>
+
+<!-- ==================== REGISTER PAGE ==================== -->
+<div class="page-view auth-layout active" id="registerPage">
+
+  <!-- Left Panel -->
+  <div class="auth-left">
+    <a href="/" class="auth-logo">
+      <div class="logo-icon">F</div>
+      FreedomStack
+    </a>
+
+    <div class="auth-left-content">
+      <div class="saved-number-callout">
+        <div class="callout-label">Your Freedom Number</div>
+        <div class="callout-number">$960,000</div>
+        <div class="callout-note">We saved this. Create an account to keep it and unlock your action plan.</div>
+      </div>
+
+      <h1 class="auth-left-headline">The number is the<br>starting line.<br>The <em>plan</em> is the race.</h1>
+
+      <p class="auth-left-body">
+        You know your Freedom Number. Now let's figure out how to get there — with a strategy built from your actual financial situation.
+      </p>
+
+      <div class="feature-pills">
+        <div class="pill">
+          <span class="pill-icon">🤖</span>
+          <span class="pill-text"><strong>AI action plan</strong> — personalized to your debts, income, and goals</span>
+        </div>
+        <div class="pill">
+          <span class="pill-icon">⚡</span>
+          <span class="pill-text"><strong>Timeline impact</strong> — see how each move shaves years off</span>
+        </div>
+        <div class="pill">
+          <span class="pill-icon">📈</span>
+          <span class="pill-text"><strong>Progress tracking</strong> — 60-second monthly check-ins</span>
+        </div>
+        <div class="pill">
+          <span class="pill-icon">🔒</span>
+          <span class="pill-text"><strong>Private by default</strong> — no account linking, no data selling, no ads</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-left-footer">
+      Not financial advice. FreedomStack provides information for educational purposes only.
+    </div>
+  </div>
+
+  <!-- Right Panel: Register Form -->
+  <div class="auth-right">
+    <div class="auth-form-container">
+
+      <!-- Mobile-only: logo -->
+      <a href="/" class="mobile-logo">
+        <div class="logo-icon">F</div>
+        FreedomStack
+      </a>
+
+      <!-- Mobile-only: compact freedom number -->
+      <div class="mobile-callout">
+        <div>
+          <div class="mc-label">Your Freedom Number</div>
+          <div class="mc-number">$960,000</div>
+        </div>
+        <div class="mc-note">Create an account to save it & unlock your plan.</div>
+      </div>
+
+      <div class="form-header">
+        <h2>Create your account</h2>
+        <p>Already have one? <a href="#" onclick="showPage('login'); return false;">Log in</a></p>
+      </div>
+
+      <!-- Form -->
+      <div class="name-row">
+        <div class="form-group">
+          <label class="form-label">First name</label>
+          <input type="text" class="form-input" placeholder="Marcus" autocomplete="given-name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last name</label>
+          <input type="text" class="form-input" placeholder="Johnson" autocomplete="family-name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" placeholder="marcus@email.com" autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="password-wrap">
+          <input type="password" class="form-input" id="regPassword" placeholder="At least 8 characters" autocomplete="new-password">
+          <button class="password-toggle" onclick="togglePassword('regPassword', this)">Show</button>
+        </div>
+        <div class="password-strength">
+          <div class="strength-bar" id="str1"></div>
+          <div class="strength-bar" id="str2"></div>
+          <div class="strength-bar" id="str3"></div>
+          <div class="strength-bar" id="str4"></div>
+        </div>
+        <div class="strength-label" id="strengthLabel"></div>
+      </div>
+
+      <div class="form-checkbox">
+        <input type="checkbox" class="checkbox-input" id="disclaimer">
+        <label class="checkbox-label" for="disclaimer">
+          I understand FreedomStack provides <a href="/terms">educational information only</a>, not financial advice. I've read the <a href="/privacy">privacy policy</a>.
+        </label>
+      </div>
+
+      <button class="btn-submit">
+        Create account & build my plan <span class="arrow">→</span>
+      </button>
+
+      <div class="form-footer">
+        Free forever for basic features. No credit card required.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== LOGIN PAGE ==================== -->
+<div class="page-view auth-layout" id="loginPage">
+
+  <!-- Left Panel -->
+  <div class="auth-left">
+    <a href="/" class="auth-logo">
+      <div class="logo-icon">F</div>
+      FreedomStack
+    </a>
+
+    <div class="auth-left-content">
+      <h1 class="auth-left-headline">Welcome back.<br>Your number is<br><em>waiting.</em></h1>
+
+      <p class="auth-left-body" style="margin-bottom: 2.5rem;">
+        Pick up where you left off — your Freedom Number, action plan, and progress are all right where you left them.
+      </p>
+
+      <div class="login-stat-grid">
+        <div class="login-stat">
+          <div class="stat-num">60s</div>
+          <div class="stat-label">Average monthly check-in</div>
+        </div>
+        <div class="login-stat">
+          <div class="stat-num">12+ yr</div>
+          <div class="stat-label">Avg time saved with a plan</div>
+        </div>
+        <div class="login-stat">
+          <div class="stat-num">0</div>
+          <div class="stat-label">Ads you'll ever see here</div>
+        </div>
+        <div class="login-stat">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Your data stays yours</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-left-footer">
+      Not financial advice. FreedomStack provides information for educational purposes only.
+    </div>
+  </div>
+
+  <!-- Right Panel: Login Form -->
+  <div class="auth-right">
+    <div class="auth-form-container">
+
+      <!-- Mobile-only: logo -->
+      <a href="/" class="mobile-logo">
+        <div class="logo-icon">F</div>
+        FreedomStack
+      </a>
+
+      <div class="form-header">
+        <h2>Welcome back</h2>
+        <p>Don't have an account? <a href="#" onclick="showPage('register'); return false;">Create one free</a></p>
+      </div>
+
+      <!-- Form -->
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" placeholder="marcus@email.com" autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="password-wrap">
+          <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
+          <button class="password-toggle" onclick="togglePassword('loginPassword', this)">Show</button>
+        </div>
+      </div>
+
+      <div class="form-extras">
+        <label class="remember-me">
+          <input type="checkbox"> Remember me
+        </label>
+        <a href="/forgot-password" class="forgot-link">Forgot password?</a>
+      </div>
+
+      <button class="btn-submit">
+        Log in <span class="arrow">→</span>
+      </button>
+
+      <div class="form-footer">
+        Your data is encrypted and never shared. <a href="/privacy">Privacy policy</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCRIPTS ========== -->
+<script>
+function showPage(page) {
+  document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.demo-toggle button').forEach(b => b.classList.remove('active'));
+
+  if (page === 'register') {
+    document.getElementById('registerPage').classList.add('active');
+    document.querySelector('.demo-toggle button:first-child').classList.add('active');
+  } else {
+    document.getElementById('loginPage').classList.add('active');
+    document.querySelector('.demo-toggle button:last-child').classList.add('active');
+  }
+}
+
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = 'Hide';
+  } else {
+    input.type = 'password';
+    btn.textContent = 'Show';
+  }
+}
+
+document.getElementById('regPassword').addEventListener('input', function() {
+  const val = this.value;
+  const bars = [
+    document.getElementById('str1'),
+    document.getElementById('str2'),
+    document.getElementById('str3'),
+    document.getElementById('str4')
+  ];
+  const label = document.getElementById('strengthLabel');
+
+  let strength = 0;
+  if (val.length >= 1) strength++;
+  if (val.length >= 8) strength++;
+  if (/[A-Z]/.test(val) && /[0-9]/.test(val)) strength++;
+  if (/[^A-Za-z0-9]/.test(val) && val.length >= 10) strength++;
+
+  const levels = ['', 'weak', 'medium', 'medium', 'strong'];
+  const labels = ['', 'Weak', 'Getting there', 'Almost', 'Strong'];
+
+  bars.forEach((bar, i) => {
+    bar.className = 'strength-bar';
+    if (i < strength) bar.classList.add('active', levels[strength]);
+  });
+
+  label.className = 'strength-label';
+  if (strength > 0) {
+    label.textContent = labels[strength];
+    label.classList.add(levels[strength]);
+  } else {
+    label.textContent = '';
+  }
+});
+</script>
+
+</body>
+</html>
