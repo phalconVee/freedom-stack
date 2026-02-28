@@ -46,6 +46,9 @@ vuexy-vue-laravel-template/
 *.md
 !README.md
 
+# Figma files (large binaries)
+figma/
+
 # FreedomStack HTML prototypes
 freedomstack-auth-screens-v2.html
 freedomstack-calculator-flow.html
